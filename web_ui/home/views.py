@@ -5,14 +5,13 @@ import json
 import requests
 import pytz, datetime
 
-urlApi = "http://localhost:8001/" 
+urlApi = "http://127.0.0.1:8001/" 
 
 
 def update_new(request):
      
     # f = open('home/events.json',) 
     # data = json.load(f) 
-    # events = requests.get('http://s3.jemshid.com:8001/sports/api/game/?filter=events')
     events = requests.get('http://127.0.0.1:8001/sports/api/game/?filter=events')
     # events = requests.get(urlApi + 'sports/api/game/?filter=events')
     list_values = dict(enumerate(eval(events.text) , start=1))
@@ -21,7 +20,7 @@ def update_new(request):
 
 def update(request):
       
-    events = requests.get('http://s3.jemshid.com:8001/sports/api/game/?filter=events')
+    events = requests.get(urlApi + 'sports/api/game/?filter=events')
     list_values = dict(enumerate(eval(events.text) , start=1))
     print(list_values)
     return render(request, 'update.html',{"data": list_values})
@@ -39,22 +38,21 @@ def create(request,num=1):
     heading = ''
     is_last = False
     if num == 1:
-        # games = requests.get('http://s3.jemshid.com:8001/sports/api/game/')
-        games = requests.get(urlApi + '/sports/api/game/')
+        games = requests.get(urlApi + 'sports/api/game/')
         list_values = dict(enumerate(eval(games.text) , start=start_val))
         heading = "Select Games"
     if num  == 2:
-        request_url =  'http://s3.jemshid.com:8001/sports/api/game/?sport=' + request.session['sport'].strip()
+        request_url =  urlApi + 'sports/api/game/?sport=' + request.session['sport'].strip()
         sport = requests.get(request_url)
         heading = "Select Event Groups"
         list_values = dict(enumerate(eval(sport.text) , start=start_val))
     if num == 3:
-        request_url =  'http://s3.jemshid.com:8001/sports/api/game/'
+        request_url =  urlApi + 'sports/api/game/'
         teams = requests.get(request_url,params ={"sport":request.session['sport'].strip(),"eventGroup":request.session['eventGroup'].strip()})
         heading = "Home"
         list_values = dict(enumerate(eval(teams.content) , start=start_val))
     if num == 4:
-        request_url =  'http://s3.jemshid.com:8001/sports/api/game/'
+        request_url =  urlApi + 'sports/api/game/'
         teams = requests.get(request_url,params ={"sport":request.session['sport'].strip(),"eventGroup":request.session['eventGroup'].strip()})
         heading = "Away"
         list_values = dict(enumerate(eval(teams.text) , start=start_val))
@@ -87,7 +85,7 @@ def post_create(request):
         data = {"sport":request.session['sport'].strip() ,"eventGroup":request.session['eventGroup'].strip(),"home":request.session['home'].strip(),"away":request.session['away'].strip(),"startTime":request.session['startTime'].strip()}
         # print(request.session['sport'] , request.session['eventGroup'],  request.session['home'] , request.session['away'] , request.session['startTime'])
         print("Data " , data)
-        result = requests.post('http://s3.jemshid.com:8001/sports/api/game/', data = data)
+        result = requests.post(urlApi + 'sports/api/game/', data = data)
         if(len(eval(result.text)) > 0):
             return JsonResponse({'success':'Posted','message':result.text})
         else:
@@ -106,7 +104,6 @@ def post_update(request):
     print("\n others " , call , ' home ' , int(home_score) , ' away ', int(away_score))
     data = {'event':eval(event),'call':call,'homeScore':int(home_score),'awayScore':int(away_score)}
     print("Data ",data)
-    # result = requests.put('http://s3.jemshid.com:8001/sports/api/game/', data = json.dumps(data),headers = {'Content-Type': 'application/json'})
     result = requests.put(urlApi + 'sports/api/game/', data = json.dumps(data),headers = {'Content-Type': 'application/json'})
     print(result.text)
     result= eval(result.text)
