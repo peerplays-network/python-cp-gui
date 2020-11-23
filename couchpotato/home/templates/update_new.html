@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"  href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"  href="https://cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap.min.css">
+
+
+
+    
+ 
+   <style>
+       /* #example_wrapper .row {
+        
+        margin-right: -22px;
+        margin-left: -22px;
+    } */
+
+             /* .container-flex{
+             width:50%;
+         }    
+        */
+       table td { 
+        display:  table-cell !important;
+        
+         }
+         
+        table th { 
+        display: table-cell  !important;
+         } 
+
+       /* body {
+        font-size: 17px;
+      } */
+    
+
+      .box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header .close{
+    margin: -9px 0px 0px -24px !important
+}
+ 
+
+   </style>
+</head>
+
+<body>
+    {% include "navbar.html" %}
+
+    <div class=box>
+ <div class=container-flex style="width:90%" >
+
+
+
+      <div  >
+    <table id="example" class="table table-striped table-bordered display nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Season</th>
+                <th>Start Time</th>
+                <th>Event Group ID</th>
+                <th>Scores</th>
+                <th>Status</th>
+                <th>In Progress</th>
+                <th>Finish</th>
+                <th>Result</th>
+                <th>Cancelled</th> 
+                <th>Event</th>
+            </tr>
+        </thead>
+        <tbody>
+    
+            {% for  a , b  in data.items %}
+                  
+            <tr>
+                
+                <td>{{b.id}}</td>
+                <td>
+                {% for i in b.name %}
+                    {{i.1}}
+                {%endfor%}
+                 </td>
+                <td>
+                     {% for i in b.season %}
+                    {{i.1}}
+                {%endfor%}
+                </td>
+                <td>{{b.start_time}}</td>
+                <td>{{b.event_group_id}}</td>
+                <td>{{b.scores}}</td>
+                <td>{{b.status}}</td>
+                 
+                <td   >
+                    <button  onclick="progress(this)">In Progress</button>
+                </td>
+                <td   >
+                    <button onclick="finish(this)">Finish</button>
+                </td>
+                <td   >   
+               
+                    <button onclick="result(this) "> Result</button>
+                </td >
+                <td  >
+                    <button onclick="cancel(this)">Cancelled</button>
+                </td> 
+                 <td  >
+                    {{b}}
+                </td>
+            </tr>
+    
+            {% endfor %}
+        </tbody>
+      
+    </table>
+</div>
+
+ 
+</div>
+</div>
+<script>
+     function progress(e){
+
+        var call = 'in_progress'
+        var homeScore = 0
+        var awayScore = 0
+            
+        if($(".modal").length == 0){
+
+            var row = $(e).closest('tr');
+            var data = $('#example').dataTable().fnGetData(row);
+             var event = data[11]
+         }
+        else{
+
+                if($(".modal #score").length > 0) {
+                    $('#home').val('')
+                    $('#away').val('')
+                }
+                var event =$('.modal table').find('tr:eq(11) td:eq(1)').text();
+                
+            }
+
+
+            $.post("/post_update",
+                    {
+                    event : event,
+                    call:call,
+                    homeScore : homeScore,
+                    awayScore : awayScore,
+                    csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                    },
+                    function(data, status){
+                    alert(data.success)
+                    // window.location.href =  '/'
+                    });
+             
+        }
+        function finish(e){
+            
+            var call = 'finish'
+            var homeScore = 0
+            var awayScore = 0
+                
+            if($(".modal").length == 0){
+
+                var row = $(e).closest('tr');
+                var data = $('#example').dataTable().fnGetData(row);
+                var event = data[11]
+            }
+            else{
+                
+                
+                if($(".modal #score").length > 0) {
+                    $('#home').val('')
+                    $('#away').val('')
+                }
+
+                var event =$('.modal table').find('tr:eq(11) td:eq(1)').text();
+            }
+
+                
+                $.post("/post_update",
+                    {
+                    event : event,
+                    call:call,
+                    homeScore : homeScore,
+                    awayScore : awayScore,
+                    csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                    },
+                    function(data, status){
+                    alert(data.success)
+                    // window.location.href =  '/'
+                    });
+
+        }
+        function result(e){
+          
+            // $('.modal').modal('show');
+            // $('.modal').dialog("open");
+            if($("#score").length == 0) {
+            
+                $(".modal").find('.modal-body')
+                .append('<div id=score><table  ><tr  ><td>Home Score </td><td style="padding-left:10px"><input type="text" id=home></td><tr><td>Away Score </td><td style="padding-left:10px"><input type="text" id=away></td><tr></table>')
+                    .append('<div > <button id=submit_result> Submit</button>')
+            }
+            
+            $( "#submit_result" ).bind( "click", function() {
+
+                var event =$('.modal table').find('tr:eq(11) td:eq(1)').text();
+                var call = 'result'
+                var homeScore = $('#home').val()
+                var awayScore = $('#away').val()
+
+
+                
+                $.post("/post_update",
+                    {
+                    event : event,
+                    call:call,
+                    homeScore : homeScore,
+                    awayScore : awayScore,
+                    csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                    },
+                    function(data, status){
+                    alert(data.success)
+                    });
+                
+            });
+                 
+
+        }
+        function cancel(e){
+
+            var call = 'canceled'
+            var homeScore = 0
+            var awayScore = 0
+                
+            if($(".modal").length == 0){
+
+                var row = $(e).closest('tr');
+                var data = $('#example').dataTable().fnGetData(row);
+                var event = data[11]
+            }
+            else{
+                
+                if($(".modal #score").length > 0) {
+                    $('#home').val('')
+                    $('#away').val('')
+                }
+                var event =$('.modal table').find('tr:eq(11) td:eq(1)').text();
+            }
+            
+
+            
+            $.post("/post_update",
+                {
+                event : event,
+                call:call,
+                homeScore : homeScore,
+                awayScore : awayScore,
+                csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                },
+                function(data, status){
+                    alert(data.success)
+                 });
+
+ 
+        }
+</script>
+</body>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap.min.js"></script>
+
+<script>
+ 
+    $(document).ready(function() {
+
+        var table = $('#example').DataTable( {
+
+            "initComplete": function(settings, json) {
+                // alert( 'DataTables has finished its initialisation.' );
+                $("#example_wrapper").removeClass('form-inline');
+                
+                setInterval(function(){ 
+                    // alert("Hello"); 
+                    $("#example").addClass('collapsed');
+                    }, 50);
+                // $(".container-flex").css('width','66%')
+                // $(".container-flex").css('width','100%')
+       
+
+                // $("#example_wrapper").removeClass('form-inline');
+
+
+            },
+            columnDefs: [
+                {
+                    "targets": [ 11],
+                    "visible": false,
+                 },
+            //     {
+            //         "targets": [ 7],
+            //         "visible": false,
+            //      },
+            //     {
+            //         "targets": [ 8],
+            //         "visible": false,
+            //      },
+                {
+                    "targets": [ 9],
+                    "visible": false,
+                 },
+            //     {
+            //         "targets": [ 10],
+            //         "visible": false,
+            //      },
+            ],
+
+              responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal( {
+                        
+                        header: function ( row ) {
+                            var data = row.data();
+                            return 'Details for '+data[0]+' '+data[1];
+                        }
+                        
+
+                    } ),
+                    
+                        renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                           
+                        }
+                    )
+                }
+
+            }
+        } );
+
+        //  $('#example td').click(function(){
+        //         // alert("Clicked")
+        //         setTimeout(function(){
+        //             //  console.log($('.modal').css('display') )
+        //              if ($('.modal').css('display') == 'block'){
+
+
+        //              }
+                     
+        //              }, 500);
+        //  });
+
+       
+
+        // $('.modal').on('shown.bs.modal', function () {
+        //         console.log("on event")
+        //     });
+ 
+
+    } );
+
+   
+
+
+    </script>
+
+     
+
+
+</html>
