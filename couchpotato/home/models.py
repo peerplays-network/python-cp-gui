@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+ 
+ 
+class ApplicationFeatures(models.Model):
+    signup = models.BooleanField()
+    

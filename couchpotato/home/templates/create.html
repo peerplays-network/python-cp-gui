@@ -14,7 +14,7 @@
 
 
 
-    <title>Block Chain</title>
+    <title>Couch Potato</title>
 
     <style>
       /* body {
@@ -116,7 +116,7 @@
         {
              var element = this
             $('input[type=radio]').each(function(){
-                console.log($(this))
+                // console.log($(this))
                 if(element != this){
                   $(this).prop('checked',false)
                 }
@@ -132,27 +132,23 @@
         var selectedtext = $("form input[type='radio']:checked").next('label:first').html()
       
         var next_num = parseInt($("form").attr("id")) + 1
+        var date_val = $('#datetimepicker1 input').val()
+        var d = new Date(date_val)
+        
+        if (typeof date_val !== 'undefined' & date_val !== ""){
+            $.post("/post_create",
+            {
+              id: $("form").attr("id"),
+              optionvalue: 'date',
+              optiontext : d.toISOString(),
+              csrfmiddlewaretoken: '{{ csrf_token }}' ,
+            },
+            function(data, status){
+              alert(data.success)
+              window.location.href =  '/'
+            });
+        }
 
-        var d = new Date($('#datetimepicker1 input').val())
-        // console.log(d.utc())
-        // console.log(d.toUTCString().toISOString())
-        // console.log(d.toISOString())
-   
-        $.post("/post_create",
-        {
-          id: $("form").attr("id"),
-          optionvalue: 'date',
-          optiontext : d.toISOString(),
-          csrfmiddlewaretoken: '{{ csrf_token }}' ,
-        },
-        function(data, status){
-          alert(data.success)
-          window.location.href =  '/'
-         });
-
-
-            //  console.log($('#datetimepicker1 input').val())
-            // $('#sdate').val().utc().format('YYYY-MM-DDTHH:mm:ssZZ')
       })
     
       $("#next").click(function(){
@@ -162,18 +158,21 @@
         var selectedtext = $("form input[type='radio']:checked").next('label:first').html()
       
         var next_num = parseInt($("form").attr("id")) + 1
-   
-        $.post("/post_create",
-        {
-          id: $("form").attr("id"),
-          optionvalue: selected.val(),
-          optiontext : selectedtext,
-          csrfmiddlewaretoken: '{{ csrf_token }}' ,
-        },
-        function(data, status){
-          // alert(data)
-          window.location.href =  '/create/'+next_num
-         });
+        // console.log(selectedtext)
+
+        if (typeof selectedtext !== 'undefined'){
+           $.post("/post_create",
+            {
+              id: $("form").attr("id"),
+              optionvalue: selected.val(),
+              optiontext : selectedtext,
+              csrfmiddlewaretoken: '{{ csrf_token }}' ,
+            },
+            function(data, status){
+              window.location.href =  '/create/'+next_num
+            });
+        }
+        
 
       }); 
 

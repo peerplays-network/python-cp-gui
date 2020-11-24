@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <title>Couch Potato</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -10,19 +11,8 @@
 
 
 
-    
  
-   <style>
-       /* #example_wrapper .row {
-        
-        margin-right: -22px;
-        margin-left: -22px;
-    } */
-
-             /* .container-flex{
-             width:50%;
-         }    
-        */
+   <style> 
        table td { 
         display:  table-cell !important;
         
@@ -31,10 +21,7 @@
         table th { 
         display: table-cell  !important;
          } 
-
-       /* body {
-        font-size: 17px;
-      } */
+ 
     
 
       .box {
@@ -121,6 +108,10 @@
         </tbody>
       
     </table>
+
+    <span>
+        <a  style="background:lavender;float: right;margin-top: 25px;" id=home href='/'>Return to Home</a>
+      </span>
 </div>
 
  
@@ -294,42 +285,23 @@
         var table = $('#example').DataTable( {
 
             "initComplete": function(settings, json) {
-                // alert( 'DataTables has finished its initialisation.' );
-                $("#example_wrapper").removeClass('form-inline');
+                 $("#example_wrapper").removeClass('form-inline');
                 
                 setInterval(function(){ 
-                    // alert("Hello"); 
-                    $("#example").addClass('collapsed');
+                     $("#example").addClass('collapsed');
                     }, 50);
-                // $(".container-flex").css('width','66%')
-                // $(".container-flex").css('width','100%')
-       
-
-                // $("#example_wrapper").removeClass('form-inline');
-
 
             },
             columnDefs: [
                 {
                     "targets": [ 11],
                     "visible": false,
-                 },
-            //     {
-            //         "targets": [ 7],
-            //         "visible": false,
-            //      },
-            //     {
-            //         "targets": [ 8],
-            //         "visible": false,
-            //      },
+                 }, 
                 {
                     "targets": [ 9],
                     "visible": false,
                  },
-            //     {
-            //         "targets": [ 10],
-            //         "visible": false,
-            //      },
+            
             ],
 
               responsive: {
@@ -353,24 +325,7 @@
             }
         } );
 
-        //  $('#example td').click(function(){
-        //         // alert("Clicked")
-        //         setTimeout(function(){
-        //             //  console.log($('.modal').css('display') )
-        //              if ($('.modal').css('display') == 'block'){
-
-
-        //              }
-                     
-        //              }, 500);
-        //  });
-
-       
-
-        // $('.modal').on('shown.bs.modal', function () {
-        //         console.log("on event")
-        //     });
- 
+         
 
     } );
 
