@@ -147,6 +147,27 @@ class Cp():
             rs.append(r)
         return incident, rs
 
+    def CreateForApiWithPotato(self, sport, eventGroup, home, away, startTime, potato):
+        incident = dict()
+        incident["call"] = INCIDENT_CALLS[0]
+
+        incident["id"] = dict()
+        incident["id"]["sport"] = sport
+        eventGroupIdentifier = self.bookiesports[sport][
+                "eventgroups"][eventGroup]["identifier"]
+        incident["id"]["event_group_name"] = eventGroupIdentifier
+        # incident["id"]["event_group_name"] = self._eventGroup
+        startTime = date_to_string(startTime)
+        incident["id"]["start_time"] = startTime
+        incident["arguments"] = {"whistle_start_time": startTime}
+        incident["id"]["home"] = home
+        incident["id"]["away"] = away
+        incident["timestamp"] = date_to_string(datetime.now(tz=timezone.utc))
+        incident["arguments"]["season"] = ""
+
+        r = self.Push2bos(incident, potato)
+        return incident
+
     def CliManufactureCreateIncident(self):
         self._call = INCIDENT_CALLS[0]
         self._sportsList = self.GetSportsList()
@@ -346,6 +367,79 @@ class Cp():
             r = self.Push2bos(incident, potatoName)
             rs.append(r)
         return incident, rs
+
+    def UpdateForApiWithPotato(self, event, call, potato, homeScore=None, awayScore=None):
+        self._event = event
+        self._call = call
+        incident = dict()
+        incident["call"] = self._call
+
+        startTime = event["start_time"] + "Z"
+        self._starttime = startTime
+        incident["id"] = dict()
+        eventGroup = rpc.get_object(event["event_group_id"])
+
+        sport = rpc.get_object(eventGroup["sport_id"])
+
+        eventGroup = dict(eventGroup["name"])["identifier"]
+        sport = dict(sport["name"])["identifier"]
+        sport = normalizer._get_sport_identifier(sport, True)
+        self._sport = sport
+        sportAlias = self.bookiesports[sport]["aliases"][0]
+
+        eventGroup = normalizer._get_eventgroup_identifier(
+                sport,
+                eventGroup,
+                startTime,
+                True)
+
+        self._eventGroup = eventGroup
+        # eventGroupAlias = self.EventGroupAlias(sport, eventGroup)
+        # eventGroupAlias = self.bookiesports[sport]["eventgroups"][
+        # eventGroup]["aliases"][0]
+
+        homeAway = event["name"][0][1]
+        self._homeAway = homeAway
+        home, away = self.HomeAway(homeAway)
+        eventScheme = self.EventScheme(sport, eventGroup)
+        homeAway = substitution([home, away], eventScheme)
+        home, away = self.HomeAway(homeAway)
+
+        homeAlias = normalizer._get_participant_identifier(
+                sport,
+                eventGroup,
+                home,
+                True)
+
+        awayAlias = normalizer._get_participant_identifier(
+                sport,
+                eventGroup,
+                away,
+                True)
+
+        # incident["id"]["event_group_name"] = eventGroupAlias
+        incident["id"]["event_group_name"] = eventGroup
+
+        incident["id"]["sport"] = sportAlias
+
+        incident["id"]["start_time"] = startTime
+        incident["arguments"] = {"whistle_start_time": startTime}
+        # incident["id"]["start_time"] = "2020-08-25T22:00:00Z"
+
+        incident["id"]["home"] = homeAlias
+        incident["id"]["away"] = awayAlias
+        incident["timestamp"] = date_to_string(datetime.now(tz=timezone.utc))
+        incident["arguments"]["season"] = event["season"][0][1]
+
+        if self._call == "result":
+            incident["arguments"]["home_score"] = homeScore
+            incident["arguments"]["away_score"] = awayScore
+
+        self._incident = incident
+        # string = incident_to_string(incident)
+
+        r = self.Push2bos(incident, potato)
+        return incident
 
     def CliUpdate(self):
         event = self.Event2Update()
