@@ -11,7 +11,7 @@ from home.forms import SignUpForm
 from django.contrib.auth.models import User
 from home.models import ApplicationFeatures 
 from django.contrib.auth import logout
-from game.views import GetEvents , Create , Update
+from game.views import GetEvents  , CreatePotato , UpdatePotato
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from home.utilities import index_page_permitted , register_login_page_permitted , allow_login , allow_register
@@ -37,7 +37,7 @@ def AuthenticateUser(request):
                 else:
                     return render(request, '403.html')    
             else:
-                messages.error(request, 'User name Password Invalid or your account is inactive')
+                messages.error(request, 'User name Password Invalid')
         
         return render(request, 'login.html')
     except:
@@ -159,6 +159,8 @@ def CreatePost(request):
 
     question_id = request.POST.get("id")
     option_text = request.POST.get("optiontext")
+    username = request.user.username
+
     question_id = int(question_id)
     if question_id == 1:
         request.session['sport'] = option_text
@@ -170,9 +172,11 @@ def CreatePost(request):
         request.session['away'] = option_text
     elif question_id == 5:
         request.session['startTime'] = option_text
-        data = {"sport":request.session['sport'].strip() ,"eventGroup":request.session['eventGroup'].strip(),"home":request.session['home'].strip(),"away":request.session['away'].strip(),"startTime":request.session['startTime'].strip()}
+        data = {"sport":request.session['sport'].strip() ,"eventGroup":request.session['eventGroup'].strip(),"home":request.session['home'].strip(),"away":request.session['away'].strip(),"startTime":request.session['startTime'].strip(),\
+                "username":username}
         print("Data " , data)
-        result = Create(data)
+        result = CreatePotato(data) 
+
         if(len(result) > 0 and 'error' not in result):
             return JsonResponse({'success':'Posted'})
         else:
@@ -191,8 +195,9 @@ def UpdatePost(request):
     call = request.POST.get("call")
     home_score = request.POST.get("homeScore")
     away_score = request.POST.get("awayScore")
-    data = {'event':eval(event),'call':call,'homeScore':home_score,'awayScore':away_score}
-    result = Update(data)
+    username = request.user.username
+    data = {'event':eval(event),'call':call,'homeScore':home_score,'awayScore':away_score,'username':username}
+    result = UpdatePotato(data)
     if(len(result) == 0) :
         return JsonResponse({'success':'Update Done as ' + call})
     else:

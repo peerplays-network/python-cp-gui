@@ -134,7 +134,15 @@
         var next_num = parseInt($("form").attr("id")) + 1
         var date_val = $('#datetimepicker1 input').val()
         var d = new Date(date_val)
+        // console.log(d.getTimezoneOffset())
         
+        //  var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+        //  console.log("Current date ", d.toString())
+        //  console.log("To utc inbuild met" , d.toUTCString())
+        //  console.log("UTC conversion " , utc.toString())
+        //  console.log("ISO conversion " , d.toISOString())
+
+
         if (typeof date_val !== 'undefined' & date_val !== ""){
             $.post("/post_create",
             {
