@@ -73,7 +73,7 @@ def SignUp(request):
                 form = SignUpForm()
             return render(request, 'register.html',{'form':form})
         else:
-            return render(request, '403.html')
+            return render(request, '403.html') 
 
     except:
         return render(request, '404.html')
@@ -213,10 +213,12 @@ def admin(request):
     if request.user.is_authenticated:
         app_feature = ApplicationFeatures.objects.filter(id=1).first()
         sign_up = None
+        limit_user_signup = None
         users = User.objects.filter(is_superuser=False)
         if app_feature is not None:
             sign_up = app_feature.signup
-        return render(request, 'admin.html',{'signup':sign_up,'users':users})
+            limit_user_signup = app_feature.limit_user_signup
+        return render(request, 'admin.html',{'signup':sign_up,'users':users,'limit_users':limit_user_signup})
     else:
         return render(request, 'login.html')
 
@@ -228,11 +230,21 @@ def SaveApplicationFeatures(request):
     '''
 
     req_signup = request.POST.get("signup")
+    req_limit_users = request.POST.get("limit_users")
+
     try:
-        value = None
-        if(req_signup == 'true'):value = True
-        else:value = False
-        signup, created = ApplicationFeatures.objects.update_or_create(id=1, defaults={'signup':value})
+        value_sign = None
+        value_user_limit = None
+        if req_signup is not '':
+            if(req_signup == 'true'):value_sign = True
+            else:value_sign = False
+            signup, created = ApplicationFeatures.objects.update_or_create(id=1, defaults={'signup':value_sign})
+        
+        if req_limit_users is not '':
+            if(req_limit_users == 'true'):value_user_limit = True
+            else:value_user_limit = False
+            limit_users, created = ApplicationFeatures.objects.update_or_create(id=1, defaults={'limit_user_signup':value_user_limit})
+
         return JsonResponse({'success':'Success'})
     except:
         return JsonResponse({'success':'Error'})

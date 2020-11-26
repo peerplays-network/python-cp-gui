@@ -19,5 +19,5 @@ def allow_login(request, user):
 
 def allow_register():
     app_feature = ApplicationFeatures.objects.filter(id=1).first()
-    allowed = (app_feature.signup is True)
+    allowed = (app_feature.signup is True and app_feature.limit_user_signup is False)
     return allowed
