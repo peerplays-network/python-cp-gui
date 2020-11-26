@@ -11,7 +11,7 @@ setuptools.setup(
     description="Couch Potato Package",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="http://s3.jemshid.com",
+    url="",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
