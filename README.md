@@ -15,6 +15,16 @@ python3 setup.py install
 cd ..
 
 
+First Run:
+cd couchpotato
+source python_cp/env/bin/activate
+cd scripts/
+./install.sh
+
+This operation will clear all the existing users
+
+
+
 To Run:
 cd couchpotato
 source python_cp/env/bin/activate
