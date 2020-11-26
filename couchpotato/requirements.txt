@@ -21,9 +21,9 @@ django-cors-headers==3.4.0
 djangorestframework==3.11.0
 dnspython==1.16.0
 eventlet==0.25.2
-Flask==1.1.2
-Flask-PyMongo==2.3.0
-Flask-SocketIO==4.3.0
+# Flask==1.1.2
+# Flask-PyMongo==2.3.0
+# Flask-SocketIO==4.3.0
 greenlet==0.4.16
 gunicorn==20.0.4
 h2==3.2.0
@@ -61,11 +61,11 @@ pytz==2020.1
 queuelib==1.5.0
 redis==3.5.3
 requests==2.23.0
-Scrapy==2.1.0
-scrapy-rotating-proxies==0.6.2
-scrapy-splash==0.7.2
-Scrapy-UserAgents==0.0.1
-scrapyrt==0.11.0
+# Scrapy==2.1.0
+# scrapy-rotating-proxies==0.6.2
+# scrapy-splash==0.7.2
+# Scrapy-UserAgents==0.0.1
+# scrapyrt==0.11.0
 service-identity==18.1.0
 six==1.15.0
 sqlparse==0.3.1
@@ -75,8 +75,26 @@ txaio==20.4.1
 typing==3.7.4.1
 urllib3==1.25.9
 w3lib==1.22.0
-# web-scrap-package==0.0.1
 Werkzeug==1.0.1
 wrapt==1.12.1
 xlrd==1.2.0
 zope.interface==5.1.0
+
+ipython
+graphenelib==1.5.0
+requests==2.22.0
+pandas==1.0.3
+numpy
+
+# bookiesports 0.4.16
+git+https://gitlab.com/PBSA/PeerplaysIO/bos/bookiesports.git@couch-potato#egg=bookiesports
+
+# bos-mint 0.5.1
+git+https://gitlab.com/PBSA/PeerplaysIO/bos/bos-mint.git@couch-potato#egg=bos-mint
+
+# bos-incidents 0.4.1
+git+https://gitlab.com/PBSA/PeerplaysIO/bos/bos-incidents.git@couch-potato#egg=bos-incidents
+
+# python-peerplays 0.4.0
+git+https://gitlab.com/PBSA/PeerplaysIO/tools-libs/python-peerplays.git@couch-potato#egg=python-peerplays
+
