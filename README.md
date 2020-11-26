@@ -4,30 +4,24 @@ Installation Instructions:
 
 Check out the project
 
-cd couchpotato
+cd python-cp-gui
 virtualenv -p python3 env
 source env/bin/activate
 pip3 install -r requirements.txt
 
-cd python_cp
-pip3 install -r requirements.txt
-python3 setup.py install
-cd ..
+python3 couchpotato/python_cp/setup.py install
 
 
 First Run:
-cd couchpotato
-source python_cp/env/bin/activate
-cd scripts/
+source env/bin/activate
+cd couchpotato/scripts/
 ./install.sh
 
 This operation will clear all the existing users
 
-
-
 To Run:
+source env/bin/activate
 cd couchpotato
-source python_cp/env/bin/activate
 python3 manage.py runserver localhost:9010
 
 The web couch potato is availabe at 
