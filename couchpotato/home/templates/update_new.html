@@ -200,7 +200,7 @@
             if($("#score").length == 0) {
             
                 $(".modal").find('.modal-body')
-                .append('<div id=score><table  ><tr  ><td>Home Score </td><td style="padding-left:10px"><input type="text" id=home></td><tr><td>Away Score </td><td style="padding-left:10px"><input type="text" id=away></td><tr></table>')
+                .append('<div id=score><table  ><tr  ><td>Home Score </td><td style="padding-left:10px"><input type="text" id=homeScore></td><tr><td>Away Score </td><td style="padding-left:10px"><input type="text" id=away></td><tr></table>')
                     .append('<div > <button id=submit_result> Submit</button>')
             }
             
@@ -208,7 +208,7 @@
 
                 var event =$('.modal table').find('tr:eq(11) td:eq(1)').text();
                 var call = 'result'
-                var homeScore = $('#home').val()
+                var homeScore = $('#homeScore').val()
                 var awayScore = $('#away').val()
 
 
