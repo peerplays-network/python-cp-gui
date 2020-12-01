@@ -1,4 +1,3 @@
-threaded
 aioredis==1.3.1
 asgiref==3.2.7
 async-timeout==3.0.1
