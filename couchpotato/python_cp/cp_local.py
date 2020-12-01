@@ -1,3 +1,5 @@
+import _thread
+import time
 import numpy as np
 import pandas as pd
 from bos_mint.node import Node
@@ -552,6 +554,10 @@ class Cp():
         # return r
 
     def Push2bos(self, incident, providerName):
+        _thread.start_new_thread(self.Push2bosMethod, (incident, providerName))
+        print("thread started")
+
+    def Push2bosMethod(self, incident, providerName):
         string = incident_to_string(incident)
         self._string = string
         incident["unique_string"] = string
@@ -571,9 +577,12 @@ class Cp():
         # print(incident)
         for k in ks:
             # for api in bosApis:
+            print("inthread:", k)
             api = bosApis[k]
             # print(api)
             r = requests.post(url=api, json=incident)
+            time.sleep(1)
+        print("thread finished")
         return r
 
     def Create(self):
