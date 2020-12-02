@@ -580,7 +580,10 @@ class Cp():
             print("inthread:", k)
             api = bosApis[k]
             # print(api)
-            r = requests.post(url=api, json=incident)
+            try:
+                r = requests.post(url=api, json=incident)
+            except:
+                logger.Warning(api + ": failed")
             time.sleep(1)
         print("thread finished")
         return r
