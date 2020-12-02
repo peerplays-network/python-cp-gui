@@ -583,7 +583,7 @@ class Cp():
             try:
                 r = requests.post(url=api, json=incident)
             except:
-                logger.Warning(api + ": failed")
+                logger.warning(api + ": failed")
             time.sleep(1)
         print("thread finished")
         return r
