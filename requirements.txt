@@ -89,7 +89,7 @@ graphenelib==1.5.0
 git+https://gitlab.com/PBSA/PeerplaysIO/bos/bookiesports.git@couch-potato#egg=bookiesports
 
 # bos-mint 0.5.1
-git+https://gitlab.com/PBSA/PeerplaysIO/bos/bos-mint.git@couch-potato#egg=bos-mint
+git+https://gitlab.com/PBSA/PeerplaysIO/bos/bos-mint.git@develop#egg=bos-mint
 
 # bos-incidents 0.4.1
 git+https://gitlab.com/PBSA/PeerplaysIO/bos/bos-incidents.git@couch-potato#egg=bos-incidents
