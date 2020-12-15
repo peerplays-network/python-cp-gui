@@ -89,7 +89,7 @@ def UpdateList(request):
             params = {'filter':'events'}
             events = GetEvents(params)
             list_values = dict(enumerate(events , start=1))
-            return render(request, 'update_new.html',{"data": list_values})
+            return render(request, 'update.html',{"data": list_values})
         else:
             return render(request, 'login.html')
     except:
