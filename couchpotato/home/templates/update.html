@@ -44,10 +44,13 @@
 
     <div class=box>
  <div class=container-flex style="width:90%" >
+	 
+	     <h4 id=local_date_time></h4>
 
 
 
-      <div  >
+
+      <div  style='margin-top:50px;'>
     <table id="example" class="table table-striped table-bordered display nowrap" style="width:100%">
         <thead>
             <tr>
@@ -56,7 +59,11 @@
                 <th>Season</th>
                 <th>Start Time</th>
                 <th>Event Group ID</th>
+<<<<<<< HEAD
+                 <th>Scores</th>
+=======
 <!--                <th>Scores</th>-->
+>>>>>>> f212d35ebf6261105df836f1a99810dabd26b277
                 <th>Status</th>
                 <th>In Progress</th>
                 <th>Finish</th>
@@ -100,6 +107,15 @@
                         // var hours = date.getHours();
                         // newDate.setHours(hours - offset);
                         // return newDate;
+<<<<<<< HEAD
+
+
+                        // New code
+                        var newDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
+                        // return newDate;
+
+                        //var newDate = new Date(date);
+=======
 
 
                         // New code
@@ -107,6 +123,7 @@
                         // return newDate;
 
                         var newDate = new Date(date);
+>>>>>>> f212d35ebf6261105df836f1a99810dabd26b277
                         return newDate;
 
                     }
@@ -115,6 +132,11 @@
                 </script>
 
                  <td>{{b.event_group_id}}</td>
+<<<<<<< HEAD
+				 <td>{{b.scores}}</td>
+
+=======
+>>>>>>> f212d35ebf6261105df836f1a99810dabd26b277
                 <td>{{b.status}}</td>
                  
                 <td   >
@@ -345,6 +367,10 @@
                  }, 
                 {
                     "targets": [ 9],
+                    "visible": false,
+                 },
+                 {
+                    "targets": [ 5],
                     "visible": false,
                  },
             
