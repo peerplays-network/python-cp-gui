@@ -26,6 +26,9 @@
     
         {% include "navbar.html" %}
 
+            <h3 id=local_date_time></h3>
+
+
     <div class="container" style="margin-top: 30px;align-items: center;">
       
       <div class="form-group" id=create_one >
@@ -103,6 +106,21 @@
 
 
     <script>
+
+    $(document).ready(function() {
+
+
+        //  var d = new Date('11/24/2020 5:25 PM');
+         var d = new Date();
+         var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+         $('#local_date_time').html(d.toLocaleString())
+         $('#utc_date_time').html(d.toUTCString())
+         $('#utcgen_date_time').html(utc.toString())
+
+
+
+
+          } );
 
     $(function () {
 
