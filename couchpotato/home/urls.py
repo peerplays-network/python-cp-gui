@@ -21,8 +21,10 @@ urlpatterns = [
     path('signup/', views.SignUp, name='signup'),
     path('post_create', views.CreatePost, name='post_create'),
     path('post_update', views.UpdatePost, name='post_update'),
+
     # path('t/', Test, name='test'), 
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 
+    
      
 ]
 

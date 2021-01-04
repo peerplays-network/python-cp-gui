@@ -26,3 +26,6 @@ python3 manage.py runserver localhost:9010
 
 The web couch potato is availabe at 
 ip_address:9010
+
+openAPI 2.0 documentation is available at /swagger and /redoc
+
