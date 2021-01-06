@@ -88,7 +88,9 @@ def UpdateList(request):
         if index_page_permitted(request):
             params = {'filter':'events'}
             events = GetEvents(params)
-            list_values = dict(enumerate(events , start=1))
+            list_values = {}
+            if events is not None:
+                list_values = dict(enumerate(events , start=1))
             return render(request, 'update_cp.html',{"data": list_values})
         else:
             return render(request, 'login.html')
