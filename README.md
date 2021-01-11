@@ -1,31 +1,36 @@
+# Couch Potato GUI
+
 The project is a web based implementation of couch potato.
 
-Installation Instructions:
+## Installation
 
-Check out the project
-
+```bash 
 cd python-cp-gui
-virtualenv -p python3 env
+python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+```
 
 python3 couchpotato/python_cp/setup.py install
 
 
-First Run:
+### First Run
+
 source env/bin/activate
 cd couchpotato/scripts/
 ./install.sh
 
 This operation will clear all the existing users
 
-To Run:
+## Usage
+```bash
 source env/bin/activate
 cd couchpotato
 python3 manage.py runserver localhost:9010
+```
 
-The web couch potato is availabe at 
-ip_address:9010
+The instance will now be available at  localhost:9010
 
+## Docs
 openAPI 2.0 documentation is available at /swagger and /redoc
 
