@@ -9,7 +9,7 @@ image: python:3.7
 
 gemnasium-python-dependency_scanning:
   before_script:
-    - apt-get update && apt-get install -qy build-essential sqlite3
+    - apt-get update && apt-get install -qy build-essential sqlite3 default-libmysqlclient-dev
 
 stages:
   - test
