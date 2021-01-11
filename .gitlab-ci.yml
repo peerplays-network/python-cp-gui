@@ -1,0 +1,22 @@
+# gitlab scanning
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
+  - template: Secret-Detection.gitlab-ci.yml
+
+image: python:3.7
+
+gemnasium-python-dependency_scanning:
+  before_script:
+    - apt-get update && apt-get install -qy build-essential sqlite3 default-libmysqlclient-dev
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - apt-get update -qy
+    - apt-get install -y python3-dev python3-pip build-essential sqlite3
+    - pip3 install -r requirements.txt
