@@ -1,0 +1,111 @@
+swagger: '2.0'
+info:
+  title: Couch Potato API
+  description: Open APIs Listing
+  termsOfService: /terms/
+  contact:
+    email: contact@snippets.local
+  license:
+    name: BSD License
+  version: '1.0'
+host: 127.0.0.1:8000
+schemes:
+  - http
+basePath: /openapi
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+paths:
+  /create_potato/:
+    get:
+      operationId: create_potato_list
+      description: 'Description : Get options to select for create'
+      parameters:
+        - name: sport
+          in: query
+          description: Enter the sports event if available
+          type: string
+        - name: eventGroup
+          in: query
+          description: Enter Event Group if available
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - create_potato
+    post:
+      operationId: create_potato_create
+      description: 'Description : Post your data to create'
+      parameters:
+        - name: sport
+          in: query
+          description: Enter the sports event
+          type: string
+        - name: eventGroup
+          in: query
+          description: Enter Event Group
+          type: string
+        - name: home
+          in: query
+          description: Enter Home
+          type: string
+        - name: away
+          in: query
+          description: Enter Away
+          type: string
+        - name: startTime
+          in: query
+          description: Enter Date time in format 2018-03-20T09:12:28Z
+          type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+        - create_potato
+    parameters: []
+  /update_potato/:
+    get:
+      operationId: update_potato_list
+      description: 'Description : Get all list to update'
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - update_potato
+    post:
+      operationId: update_potato_create
+      description: 'Description : Post Details for Update'
+      parameters:
+        - name: event
+          in: query
+          description: Enter the sports event
+          type: object
+        - name: call
+          in: query
+          description: Enter options like in_progress , finish , result , canceled
+          type: string
+        - name: homeScore
+          in: query
+          description: Enter Home Score if call is `finish`
+          type: number
+          format: double
+        - name: awayScore
+          in: query
+          description: Enter Away Score if call is `finish`
+          type: number
+          format: double
+      responses:
+        '201':
+          description: ''
+      tags:
+        - update_potato
+    parameters: []
+definitions: {}
