@@ -1,4 +1,4 @@
-from couch_potato import cp_local
+from cp_local import cp_local
 import pandas as pd
 import datetime as dt
 import time
