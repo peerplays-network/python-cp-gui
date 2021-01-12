@@ -1,3 +1,7 @@
+bookiesports
+bos-mint
+bos-incidents
+
 aiohttp==3.7.3
 appdirs==1.4.4
 asgiref==3.3.1
