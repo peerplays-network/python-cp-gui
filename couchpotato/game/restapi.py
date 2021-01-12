@@ -1,7 +1,8 @@
 import sys
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from couch_potato import cp_local
+# from couch_potato import cp_local
+import cp_local
 from rest_framework.permissions import IsAuthenticated , IsAdminUser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi

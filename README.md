@@ -11,14 +11,17 @@ source env/bin/activate
 pip3 install -r requirements.txt
 ```
 
-python3 couchpotato/python_cp/setup.py install
 
 
 ### First Run
 
+Modify config-bos-mint.yaml
+
+```bash
 source env/bin/activate
 cd couchpotato/scripts/
 ./install.sh
+```
 
 This operation will clear all the existing users
 
