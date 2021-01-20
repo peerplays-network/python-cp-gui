@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from couch_potato import cp_local
+# from couch_potato import cp_local
 from django.http import Http404 , JsonResponse
 
 # Create your views here.
+import cp_local
 cp = cp_local.Cp()
-
 
 def GetEvents(params={}):
     rDict = dict()
@@ -112,6 +112,12 @@ def UpdatePotato(record):
         rDict["error"] = str(e)
         return rDict
     try:
+        print("Event > " ,record["event"] , '\n Type ', type(record["event"]))
+        print("Call ", record["call"])
+        print("username " , potatouser)
+        print("homeScore " , homeScore)
+        print("awayScore " , awayScore)
+
         cp.UpdateForApiWithPotato(event, call, potatouser,homeScore, awayScore)
     except Exception as e:
         rDict["status"] = "error"

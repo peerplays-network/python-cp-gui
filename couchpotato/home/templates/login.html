@@ -44,7 +44,7 @@
                 	
                     <div class="row">
                         <div class="col-sm-7 col-sm-offset-2 text">
-                            <h1>Login</h1>
+                           
                             <div class="description">
                             	 
                             </div>
@@ -56,16 +56,8 @@
                         <div class="col-sm-5 col-sm-offset-3">
                         	
                         	<div class="form-box">
-	                        	<div class="form-top">
-	                        		<div class="form-top-left">
-	                        			<h3>Login to our site</h3>
-	                            		<p>Enter username and password to log on:</p>
-	                        		</div>
-	                        		<div class="form-top-right">
-	                        			<i class="fa fa-key"></i>
-	                        		</div>
-	                            </div>
-	                            <div class="form-bottom">
+	                        	 
+	                            <div class="form-bottom" style="margin-top:20px;"> 
 
 									<form role="form" action="/login/" method="post" class="login-form">
 										{% csrf_token %}
@@ -77,13 +69,17 @@
 				                        	<label class="sr-only" for="password">Password</label>
 				                        	<input type="password" name="password" placeholder="Password..." class="form-password form-control" id="form-password">
                                         </div>
+                                        
                                         {% if messages %}
-                                        <ul class="messages" style="color:red">
-                                            {% for message in messages %}
-                                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                            {% endfor %}
-                                        </ul>
+                                            <ul class="messages" style="color:red">
+                                                {% for message in messages %}
+                                                
+                                                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                                                {% endfor %}
+                                            </ul>
                                         {% endif %}
+
+                                        
 
 
                                         <button type="submit" class="btn">Sign in!</button>

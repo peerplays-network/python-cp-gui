@@ -106,6 +106,16 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    },
+}
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = '' 
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 

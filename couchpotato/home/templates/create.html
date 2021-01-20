@@ -66,8 +66,12 @@
           
     
         </div>
-         {% if not islast %}
+        {% if question_id  > 1 %}
+            <button class="btn btn-primary" type="button" style="margin-top: 20px;" id=back>Back</button>
+        {% endif %}
         
+        {% if not islast %}
+         
             <button class="btn btn-primary" type="button" style="margin-top: 20px;" id=next>Next</button>
 
         {% endif %}
@@ -203,6 +207,14 @@
         
 
       }); 
+
+      $("#back").click(function(){
+        
+      
+        var next_num = parseInt($("form").attr("id")) - 1
+        window.location.href =  '/create/'+next_num
+      
+      });
 
      </script>
   </body>
