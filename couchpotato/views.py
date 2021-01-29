@@ -1,10 +1,12 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 # from couch_potato import cp_local
-from django.http import Http404 , JsonResponse
+# from django.http import Http404 , JsonResponse
+# from django.http import JsonResponse
 
 # Create your views here.
 import cp_local
 cp = cp_local.Cp()
+
 
 def GetEvents(params={}):
     rDict = dict()
@@ -18,18 +20,18 @@ def GetEvents(params={}):
         if params["filter"] == "events":
             try:
                 rDict = cp.EventsAllSortedForApi()
+                rDict = cp.EventsAllWithEventGroupName(rDict)
             except Exception as e:
                 rDict["status"] = "error"
                 rDict["error"] = str(e)
             return rDict
     try:
         print(eventGroup, sport)
-        rDict = cp.GetForCreate(sport, eventGroup)
+        rDict = cp.GetForCreate(sport, eventGroup) 
     except Exception as e:
         rDict["status"] = "error"
         rDict["error"] = str(e)
     return rDict
-
 
 def Create(record):
     rDict = dict()

@@ -26,6 +26,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+
 schema_view = get_schema_view(
    openapi.Info(
       title="Couch Potato API",
@@ -49,15 +50,4 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     
 ]
-
-#     path('openapi-schema/', get_schema_view(
-#     title="Couch Potato",  # Title of your app
-#     description="Couch Potato",  # Description of your app
-#     version="1.0.0",
-#     public=True,
-# ), name='openapi-schema'), 
-
-#  path('swagger-ui/', TemplateView.as_view(
-#         template_name='swagger-ui.html',
-#         extra_context={'schema_url':'openapi-schema'}
-#     ), name='swagger-ui'),
+ 

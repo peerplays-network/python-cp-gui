@@ -249,6 +249,14 @@ class Cp():
             eventsAllList.append(dict(eventsAll.iloc[k]))
         return eventsAllList
 
+    def EventsAllWithEventGroupName(self, eventsAll):
+        resEvents = []
+        for event in eventsAll:
+            event_group_id = event["event_group_id"]
+            event["event_group_id"] = rpc.get_object(event_group_id)["name"][1][1]
+        return eventsAll
+            
+
     def Event2Update(self):
         eventsAll = self.EventsAllSorted()
         if isinstance(eventsAll, type(None)):
