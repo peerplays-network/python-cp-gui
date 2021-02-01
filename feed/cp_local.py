@@ -314,6 +314,8 @@ class Cp():
         self._sport = sport
         sportAlias = self.bookiesports[sport]["aliases"][0]
 
+        print(sport, eventGroup, startTime)
+
         eventGroup = normalizer._get_eventgroup_identifier(
                 sport,
                 eventGroup,

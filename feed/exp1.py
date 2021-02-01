@@ -59,16 +59,28 @@ class Feed:
         return events
 
     def Call(self, event, incident):
-        if event["strStatus"] == "Match Finished":
+
+        startTime = string_to_date(incident["id"]["start_time"])
+        now = datetime.now(timezone.utc)
+
+        if event["strPostponed"] != "no":
+            self.failedEvents.append(event)
+            print("Postponed Event, INSPECT")
+
+        elif (
+                event["strStatus"] == "Match Finished") or (
+                    (now - startTime).days > 1):
             incident["call"] = INCIDENT_CALLS[3]
             incident["arguments"] = dict()
             incident["arguments"]["home_score"] = event["intHomeScore"]
             incident["arguments"]["away_score"] = event["intAwayScore"]
+
         elif event["strStatus"] == "Not Started":
             incident["call"] = INCIDENT_CALLS[0]
+
         else:
             self.failedEvents.append(event)
-            print("Call Not Managed:", event)
+            print("Call Not Managed:")
         return incident
 
     def ToCp(self, event):
@@ -134,7 +146,6 @@ class Feed:
                 print(e)
 
     def PushLeague(self, leagueid, call="create"):
-        # bosApis = config["bosApis"]
         if call == "create":
             events = self.Schedule15(leagueid)
         elif call == "result":
@@ -171,6 +182,49 @@ class Feed:
         _thread.start_new_thread(self.WhileForThread, ())
 
 
+class Updater:
+
+    def __init__(self):
+        self.cp = Cp()
+        self.delayMax = 3600
+        self.delay = 60
+        self.flagWhileForThread = "stop"
+        pass
+
+    def Update(self):
+        eventsAllSorted = self.cp.EventsAllSorted()
+        self.eventsAllSorted = eventsAllSorted
+        for k in range(len(eventsAllSorted)):
+            event = eventsAllSorted.iloc[k]
+            self.event = event
+            print(k, "/", len(eventsAllSorted), event["start_time"])
+            startTime = event["start_time"] + "Z"
+            startTime = string_to_date(startTime)
+            nowInUtc = datetime.now(startTime.tzinfo)
+            if startTime <= nowInUtc:
+                if event["status"] == "upcoming":
+                    self.cp.UpdateForApi(
+                        event, "in_progress")
+            else:
+                time2nextEvent = startTime - nowInUtc
+                time2nextEvent = time2nextEvent.total_seconds()
+                print("Wait Started at:", nowInUtc)
+                if time2nextEvent > self.delayMax:
+                    time.sleep(self.delayMax)
+                else:
+                    time.slep(time2nextEvent)
+                break
+
+    def WhileForUpdate(self):
+        while self.flagWhileForThread == "run":
+            self.Update()
+        print("WhileForUpdateThred EXITED")
+
+    def UpdateInThread(self):
+        self.flagWhileForThread = "run"
+        _thread.start_new_thread(self.WhileForUpdate, ())
+
+
 class FeedDetails:
 
     def __init__(self):
@@ -197,6 +251,7 @@ if __name__ == "__main__":
     feed = Feed()
     self = feed
     feedDetails = FeedDetails()
+    updater = Updater()
     # leagues = feedDetails.Leagues()
     # leagues = leagues["leagues"]
     # print(leagues)
