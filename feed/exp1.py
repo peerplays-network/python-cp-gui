@@ -8,8 +8,8 @@ from cp_local import Cp  # config
 import _thread
 import time
 
-# leagueIds = [4328, 4391, 4387]
-leagueIds = [4387]
+leagueIds = [4328, 4391, 4387]
+# leagueIds = [4387]
 # 4387, 4335, 4400
 
 INCIDENT_CALLS = [
@@ -35,7 +35,7 @@ class Feed:
     def __init__(self):
         self.cp = Cp()
         self.failedEvents = []
-        self.constCheckPeriod = 60  # in seconds
+        self.constCheckPeriod = 60 * 60 * 24 # in seconds
         pass
 
     def Past15(self, leagueid):
