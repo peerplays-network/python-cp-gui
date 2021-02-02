@@ -1,3 +1,4 @@
+import yaml
 from dateutil.parser import parse
 import requests
 from bos_incidents.datestring import date_to_string, string_to_date
@@ -25,7 +26,7 @@ INCIDENT_CALLS = [
 apiBase = "https://www.thesportsdb.com/api/v1/json/1/"
 apiEventsNextLeague = "eventsnextleague.php?id="
 apiEventsPastLeague = "eventspastleague.php?id="
-
+apiTeamsFromLeagueId = "lookup_all_teams.php?id="
 
 apiAllLeagues = "all_leagues.php"
 
@@ -35,7 +36,7 @@ class Feed:
     def __init__(self):
         self.cp = Cp()
         self.failedEvents = []
-        self.constCheckPeriod = 60 * 60 * 24 # in seconds
+        self.constCheckPeriod = 60 * 60 * 24  # in seconds
         pass
 
     def Past15(self, leagueid):
@@ -62,6 +63,8 @@ class Feed:
 
         startTime = string_to_date(incident["id"]["start_time"])
         now = datetime.now(timezone.utc)
+        self.now = now
+        self.startTime = startTime
 
         if event["strPostponed"] != "no":
             self.failedEvents.append(event)
@@ -74,9 +77,17 @@ class Feed:
             incident["arguments"] = dict()
             incident["arguments"]["home_score"] = event["intHomeScore"]
             incident["arguments"]["away_score"] = event["intAwayScore"]
+            print("Match Finished")
 
         elif event["strStatus"] == "Not Started":
             incident["call"] = INCIDENT_CALLS[0]
+            print("Not started")
+
+        elif (
+                startTime - now).days >= 1 and isinstance(
+                        event["strStatus"], type(None)):
+            incident["call"] = INCIDENT_CALLS[0]
+            print("None created")
 
         else:
             self.failedEvents.append(event)
@@ -245,6 +256,48 @@ class FeedDetails:
                 # print(k, "/", len(leagues))
                 if query in str(leagues[k]):
                     print(leagues[k])
+
+    def TeamsFromLeagueId(self, leagueid):
+        url = apiBase + apiTeamsFromLeagueId + str(leagueid)
+        teams = requests.get(url)
+        teams = teams.text
+        teams = json.loads(teams)
+        teams = teams["teams"]
+        # teamsShort = []
+        for k in range(len(teams)):
+            team = teams[k]
+            print(
+                team[
+                    "strTeam"], "|", team[
+                        "strTeamShort"], "|", team["strAlternate"])
+            # teamShort = dict()
+            # teamShort["str"]
+            # team["strTeam"] =
+        return teams
+
+    def TeamsToDict(self, teams):
+        participants = []
+        for i in teams:
+            participant = dict()
+            participant["identifier"] = i["strTeam"]
+            participant["aliases"] = []
+            participant["aliases"].append(i["strTeam"])
+            participant["aliases"].append(i["strAlternate"])
+            participant["aliases"].append(i["strTeamShort"])
+            participant["name"] = dict()
+            participant["name"]["en"] = i["strTeam"]
+            participant["name"]["sen"] = i["strTeamShort"]
+            participants.append(participant)
+        return participants
+
+    def TeamsToYaml(self, leagueId, filename):
+        teams = self.TeamsFromLeagueId(leagueId)
+        participants = self.TeamsToDict(teams)
+        toFile = dict()
+        toFile["participants"] = participants
+        with open(filename, "w") as f:
+            f.write(yaml.dump(toFile))
+        return toFile
 
 
 if __name__ == "__main__":
