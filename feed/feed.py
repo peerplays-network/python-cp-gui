@@ -10,8 +10,9 @@ import _thread
 import time
 
 leagueIds = [4328, 4391, 4387]
-# leagueIds = [4387]
-# 4387, 4335, 4400
+# 4328 : EPL
+# 4391 : NFL
+# 4387 : NBA
 
 INCIDENT_CALLS = [
     "create",  # 0
@@ -279,14 +280,21 @@ class FeedDetails:
         participants = []
         for i in teams:
             participant = dict()
-            participant["identifier"] = i["strTeam"]
+            strTeam = i["strTeam"]
+            strAlternate = i["strAlternate"]
+            strTeamShort = i["strTeamShort"]
+            if isinstance(strAlternate, type(None)):
+                strAlternate = strTeam
+            if isinstance(strTeamShort, type(None)):
+                strTeamShort = strTeam
+            participant["identifier"] = strTeam
             participant["aliases"] = []
-            participant["aliases"].append(i["strTeam"])
-            participant["aliases"].append(i["strAlternate"])
-            participant["aliases"].append(i["strTeamShort"])
+            participant["aliases"].append(strTeam)
+            participant["aliases"].append(strAlternate)
+            participant["aliases"].append(strTeamShort)
             participant["name"] = dict()
-            participant["name"]["en"] = i["strTeam"]
-            participant["name"]["sen"] = i["strTeamShort"]
+            participant["name"]["en"] = strTeam
+            participant["name"]["sen"] = strTeamShort
             participants.append(participant)
         return participants
 
