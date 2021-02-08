@@ -13,6 +13,14 @@ leagueIds = [4328, 4391, 4387]
 # 4328 : EPL
 # 4391 : NFL
 # 4387 : NBA
+# 4335 : LaLiga
+# 4332 : Serie A
+# 4562 : Friendly International : International Friendlies
+# 4482 : FA Cup
+# 4481 : UEFA Europa Lague
+# 4480 : UEFA Champions League
+# 4331 : Bundesliga
+
 
 INCIDENT_CALLS = [
     "create",  # 0
