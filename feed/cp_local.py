@@ -662,7 +662,7 @@ class Cp():
             except Exception as e:
                 print(e)
                 logger.warning(api + ": failed")
-            time.sleep(1)
+            time.sleep(60)
         print("thread finished")
         return r
 
