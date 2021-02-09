@@ -154,6 +154,8 @@ class Feed:
         self.Push2Bos(events)
 
     def Push2Bos(self, events):
+        if isinstance(events, type(None)):
+            return
         for k in range(len(events)):
             while True:
                 proposalsOpen = rpc.get_proposed_transactions("1.2.1")
@@ -171,6 +173,7 @@ class Feed:
                 self.failedEvents.append(event)
                 print("Failed Event: ", k, toCp)
                 print(e)
+        return
 
     def PushLeague(self, leagueid, call="create"):
         if call == "create":
