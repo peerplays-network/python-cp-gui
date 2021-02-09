@@ -666,9 +666,43 @@ class Cp():
         print("thread finished")
         return r
 
+    def Push2bosBetter(self, incident, providerNames):
+        string = incident_to_string(incident)
+        self._string = string
+        incident["unique_string"] = string
+        incident["provider_info"] = dict()
+        incident["provider_info"]["pushed"] = date_to_string(
+                datetime.now(tz=timezone.utc))
+        self._incident = incident
+        incident = normalize(incident, True)
+        self._incident = incident
+        logger.info(str(incident))
+
+        # r = requests.post(url=bos["local"], json=incident)
+        rng = np.random.default_rng()
+        lBosApis = len(bosApis)
+        ks = rng.choice(lBosApis, size=lBosApis, replace=False)
+        # print(incident)
+        for k in ks:
+            # for api in bosApis:
+            print("inthread:", k)
+            api = bosApis[k]
+            for providerName in providerNames:
+                incident["provider_info"]["name"] = providerName
+                # print(api)
+                try:
+                    r = requests.post(url=api, json=incident)
+                except Exception as e:
+                    print(e)
+                    logger.warning(api + ": failed")
+                time.sleep(20)
+        print("thread finished")
+        return r
+
     def Push2bosAll(self, incident):
-        for potato in config["potatoNames"]:
-            self.Push2bosMethod(incident, potato)
+        self.Push2bosBetter(incident, config["potatoNames"])
+        # for potato in config["potatoNames"]:
+        # self.Push2bosMethod(incident, potato)
 
     def Create(self):
         incident = self.CliManufactureCreateIncident()

@@ -5,7 +5,7 @@ from bos_incidents.datestring import date_to_string, string_to_date
 from datetime import datetime, timezone
 import json
 # import pandas as pd
-from cp_local import Cp  # config
+from cp_local import Cp, rpc  # config
 import _thread
 import time
 
@@ -155,6 +155,13 @@ class Feed:
 
     def Push2Bos(self, events):
         for k in range(len(events)):
+            while True:
+                proposalsOpen = rpc.get_proposed_transactions("1.2.1")
+                print("Len proposalsOpen: ", len(proposalsOpen))
+                if len(proposalsOpen) == 0:
+                    break
+                else:
+                    time.sleep(60)
             event = events[k]
             toCp = self.ToCp(event)
             try:
