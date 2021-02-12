@@ -5,7 +5,7 @@ from bos_incidents.datestring import date_to_string, string_to_date
 from datetime import datetime, timezone
 import json
 # import pandas as pd
-from cp_local import Cp, rpc  # config
+from cp_local import Cp, rpc, config
 import _thread
 import time
 
@@ -32,7 +32,9 @@ INCIDENT_CALLS = [
 ]
 
 # https://www.thesportsdb.com/api/v1/json/1/eventspastleague.php?id=4391
-apiBase = "https://www.thesportsdb.com/api/v1/json/1/"
+# apiBase = "https://www.thesportsdb.com/api/v1/json/1/"
+apiBase = "https://www.thesportsdb.com/api/v1/json/"
+apiBase = apiBase + str(config["token"][0]) + "/"
 apiEventsNextLeague = "eventsnextleague.php?id="
 apiEventsPastLeague = "eventspastleague.php?id="
 apiTeamsFromLeagueId = "lookup_all_teams.php?id="
@@ -61,6 +63,7 @@ class Feed:
     def Schedule15(self, leagueid):
         url = apiBase + apiEventsNextLeague + str(leagueid)
         schedule15 = requests.get(url)
+        self._schedule15 = schedule15
         schedule15 = schedule15.text
         schedule15 = json.loads(schedule15)
         events = schedule15["events"]
