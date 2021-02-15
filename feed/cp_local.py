@@ -66,7 +66,7 @@ def substitution(teams, scheme):
 class Cp():
 
     def __init__(self):
-        self.delayBetweenBosPushes = 1 # in seconds
+        self.delayBetweenBosPushes = 1  # in seconds
         self.bookiesports = BookieSports(chainName)
         pass
 
@@ -250,6 +250,14 @@ class Cp():
         for k in range(len(eventsAll)):
             eventsAllList.append(dict(eventsAll.iloc[k]))
         return eventsAllList
+
+    def EventsAllWithEventGroupName(self, eventsAll):
+        # resEvents = []
+        for event in eventsAll:
+            event_group_id = event["event_group_id"]
+            event["event_group_id"] = rpc.get_object(
+                    event_group_id)["name"][1][1]
+        return eventsAll
 
     def Event2Update(self):
         eventsAll = self.EventsAllSorted()
@@ -659,7 +667,7 @@ class Cp():
             api = bosApis[k]
             # print(api)
             try:
-                r = requests.post(url=api, json=incident)
+                requests.post(url=api, json=incident)
             except Exception as e:
                 print(e)
                 logger.warning(api + ": failed")
@@ -692,7 +700,7 @@ class Cp():
                 incident["provider_info"]["name"] = providerName
                 # print(api)
                 try:
-                    r = requests.post(url=api, json=incident)
+                    requests.post(url=api, json=incident)
                 except Exception as e:
                     print(e)
                     logger.warning(api + ": failed")

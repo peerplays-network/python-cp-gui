@@ -18,6 +18,7 @@ def GetEvents(params={}):
         if params["filter"] == "events":
             try:
                 rDict = cp.EventsAllSortedForApi()
+                rDict = cp.EventsAllWithEventGroupName(rDict)
             except Exception as e:
                 rDict["status"] = "error"
                 rDict["error"] = str(e)
