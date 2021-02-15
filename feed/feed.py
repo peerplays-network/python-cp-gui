@@ -80,12 +80,14 @@ class Feed:
         self.now = now
         self.startTime = startTime
 
-        if event["strPostponed"] != "no":
-            self.failedEvents.append(event)
-            print("Postponed Event, INSPECT")
+        if event["strPostponed"] == "yes":
+            incident["call"] = INCIDENT_CALLS[4]
+            print("Postponed Event")
 
         elif (
+                event["strStatus"] == "FT") or (
                 event["strStatus"] == "Match Finished") or (
+                event["strStatus"] == "AOT") or (
                     (now - startTime).days > 1):
             incident["call"] = INCIDENT_CALLS[3]
             incident["arguments"] = dict()
@@ -93,15 +95,21 @@ class Feed:
             incident["arguments"]["away_score"] = event["intAwayScore"]
             print("Match Finished")
 
-        elif event["strStatus"] == "Not Started":
+        elif (
+                event["strStatus"] == "Not Started") or (
+                event["strStatus"] == "NS"):
             incident["call"] = INCIDENT_CALLS[0]
-            print("Not started")
+            print("Not started or NS")
 
         elif (
                 startTime - now).days >= 1 and isinstance(
                         event["strStatus"], type(None)):
             incident["call"] = INCIDENT_CALLS[0]
-            print("None created")
+            print("None elif case and event created")
+
+        elif (event["strStatus"] == "Second Half"):
+            incident["call"] = INCIDENT_CALLS[1]
+            print('Second Half', "to in_progress", event["strFilename"])
 
         else:
             self.failedEvents.append(event)
