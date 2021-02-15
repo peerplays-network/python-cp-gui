@@ -66,6 +66,7 @@ def substitution(teams, scheme):
 class Cp():
 
     def __init__(self):
+        self.delayBetweenBosPushes = 1 # in seconds
         self.bookiesports = BookieSports(chainName)
         pass
 
@@ -662,9 +663,9 @@ class Cp():
             except Exception as e:
                 print(e)
                 logger.warning(api + ": failed")
-            time.sleep(60)
+            time.sleep(self.delayBetweenBosPushes)
         print("thread finished")
-        return r
+        return
 
     def Push2bosBetter(self, incident, providerNames):
         string = incident_to_string(incident)
@@ -695,9 +696,9 @@ class Cp():
                 except Exception as e:
                     print(e)
                     logger.warning(api + ": failed")
-                time.sleep(20)
+                time.sleep(self.delayBetweenBosPushes)
         print("thread finished")
-        return r
+        return
 
     def Push2bosAll(self, incident):
         self.Push2bosBetter(incident, config["potatoNames"])
