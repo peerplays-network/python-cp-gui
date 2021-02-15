@@ -9,7 +9,9 @@ from cp_local import Cp, rpc, config
 import _thread
 import time
 
-leagueIds = [4328, 4391, 4387]
+leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+# 4380 : NHL # Ice Hockey
+# 4424 : MLB # Baseball
 # 4328 : EPL
 # 4391 : NFL
 # 4387 : NBA
@@ -306,7 +308,11 @@ class FeedDetails:
             strTeamShort = i["strTeamShort"]
             if isinstance(strAlternate, type(None)):
                 strAlternate = strTeam
+            elif len(strAlternate) == 0:
+                strAlternate = strTeam
             if isinstance(strTeamShort, type(None)):
+                strTeamShort = strTeam
+            elif len(strTeamShort) == 0:
                 strTeamShort = strTeam
             participant["identifier"] = strTeam
             participant["aliases"] = []
