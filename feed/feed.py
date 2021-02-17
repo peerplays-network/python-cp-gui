@@ -50,6 +50,7 @@ class Feed:
         self.cp = Cp()
         self.failedEvents = []
         self.constCheckPeriod = 60 * 60 * 24  # in seconds
+        self.maxOpenProposals = 1
         pass
 
     def Past15(self, leagueid):
@@ -80,7 +81,8 @@ class Feed:
         self.now = now
         self.startTime = startTime
 
-        if event["strPostponed"] == "yes":
+        if (event["strPostponed"] == "yes") or (
+                event["strStatus"] == "POST"):
             incident["call"] = INCIDENT_CALLS[4]
             print("Postponed Event")
 
@@ -173,7 +175,7 @@ class Feed:
             while True:
                 proposalsOpen = rpc.get_proposed_transactions("1.2.1")
                 print("Len proposalsOpen: ", len(proposalsOpen))
-                if len(proposalsOpen) == 0:
+                if len(proposalsOpen) <= self.maxOpenProposals:
                     break
                 else:
                     time.sleep(60)
