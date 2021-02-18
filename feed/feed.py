@@ -327,7 +327,10 @@ class FeedDetails:
             participant["identifier"] = strTeam
             participant["aliases"] = []
             participant["aliases"].append(strTeam)
-            participant["aliases"].append(strAlternate)
+            strAlternates = strAlternate.split(", ")
+            for item in strAlternates:
+                participant["aliases"].append(item)
+            # participant["aliases"].append(strAlternate)
             participant["aliases"].append(strTeamShort)
             participant["name"] = dict()
             participant["name"]["en"] = strTeam
