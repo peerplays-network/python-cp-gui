@@ -89,6 +89,7 @@ class Feed:
         elif (
                 event["strStatus"] == "FT") or (
                 event["strStatus"] == "Match Finished") or (
+                event["strStatus"] == "AP") or (
                 event["strStatus"] == "AOT") or (
                     (now - startTime).days > 1):
             incident["call"] = INCIDENT_CALLS[3]
@@ -257,7 +258,7 @@ class Updater:
                 if time2nextEvent > self.delayMax:
                     time.sleep(self.delayMax)
                 else:
-                    time.slep(time2nextEvent)
+                    time.sleep(time2nextEvent)
                 break
 
     def WhileForUpdate(self):
