@@ -255,7 +255,7 @@ class Cp():
         # resEvents = []
         for event in eventsAll:
             event_group_id = event["event_group_id"]
-            event["event_group_id"] = rpc.get_object(
+            event["event_group_name"] = rpc.get_object(
                     event_group_id)["name"][1][1]
         return eventsAll
 
