@@ -32,7 +32,8 @@ cd couchpotato
 python3 manage.py runserver localhost:9010
 ```
 
-The instance will now be available at  localhost:9010
+The instance will now be available at  localhost:9010 if running from the local machine
+or at ip_of_the__machine:9010 for any machine.
 
 ## Docs
 openAPI 2.0 documentation is available at /swagger and /redoc
