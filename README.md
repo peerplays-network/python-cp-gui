@@ -29,7 +29,7 @@ This operation will clear all the existing users
 ```bash
 source env/bin/activate
 cd couchpotato
-python3 manage.py runserver localhost:9010
+python3 manage.py runserver 0.0.0.0:9010
 ```
 
 The instance will now be available at  localhost:9010 if running from the local machine
