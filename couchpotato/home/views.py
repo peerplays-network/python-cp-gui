@@ -45,7 +45,7 @@ def AuthenticateUser(request):
             if username is None or username is '':
                 messages.error(request, 'Username cannot be blank')
             else:
-                messages.error(request, "Last else Invalid username or password.")
+                messages.error(request, "Invalid username or password.")
  
     return HttpResponseRedirect('/')
 
