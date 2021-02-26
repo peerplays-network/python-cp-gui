@@ -1,6 +1,6 @@
  
 # Create your views here.
-from django.http import Http404 , JsonResponse
+from django.http import Http404 , JsonResponse , HttpResponseRedirect
 from django.shortcuts import render
 import json
 import requests
@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from home.utilities import index_page_permitted , register_login_page_permitted , allow_login , allow_register
 from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
+
 
 
 def AuthenticateUser(request):
@@ -23,25 +25,30 @@ def AuthenticateUser(request):
     param: request
     description: Loads the login page and does the authentication.
     '''
-
-    try:
-        if request.method == 'POST': 
-            username = request.POST.get('username')
-            raw_password = request.POST.get('password')
-            user = authenticate(username=username, password=raw_password)
-            
+    
+    if request.method == 'POST':
+        form = AuthenticationForm(request=request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username').strip()
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
             if user is not None:
-                if allow_login(request , user):
-                    login(request, user)
-                    return redirect('/')
-                else:
-                    return render(request, '403.html')    
+                login(request, user)
+                return redirect('/')
             else:
-                messages.error(request, 'User name Password Invalid')
-        
-        return render(request, 'login.html')
-    except:
-        return render(request, '404.html')
+                if username is None or username is '':
+                    messages.error(request, 'Username cannot be blank')
+                else:
+                    messages.error(request, "Invalid username or password.")
+        else:
+            username = request.POST.get('username').strip()
+            if username is None or username is '':
+                messages.error(request, 'Username cannot be blank')
+            else:
+                messages.error(request, "Invalid username or password.")
+ 
+    return HttpResponseRedirect('/')
+
 
 def LogoutUser(request):
     '''
@@ -52,31 +59,45 @@ def LogoutUser(request):
     logout(request)
     return redirect('/')
 
+def LogoutSwagger(request):
+    '''
+    param: request
+    description: Log outs the logged in user
+    '''
+
+    logout(request)
+    return redirect('/swagger')
+
+
 def SignUp(request):
     '''
     param: request
     description :  Loads the registration page and does the sign up and authentication.
     '''
-    try:
-        if allow_register():
-            if request.method == 'POST':   
-                form = SignUpForm(request.POST)
-                if form.is_valid():
-                    form.save()
-                    username = form.cleaned_data.get('username')
-                    raw_password = form.cleaned_data.get('password1')
-                    user = authenticate(username=username, password=raw_password)
-                    if user is not None:
-                        login(request, user)
-                        return redirect('/')
-            else:
-                form = SignUpForm()
-            return render(request, 'register.html',{'form':form})
+    # print("In sign up ")
+    # try:
+    if allow_register():
+        # print("in allow register " , request.method )
+        if request.method == 'POST':   
+            form = SignUpForm(request.POST)
+            # print(form)
+            if form.is_valid():
+                # print("Form is valid")
+                form.save()
+                username = form.cleaned_data.get('username')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                if user is not None:
+                    login(request, user)
+                    return redirect('/')
         else:
-            return render(request, '403.html') 
+            form = SignUpForm()
+        return render(request, 'register.html',{'form':form})
+    else:
+        return render(request, '403.html') 
 
-    except:
-        return render(request, '404.html')
+    # except:
+    #     return render(request, '404.html')
 
  
 def UpdateList(request):
@@ -88,7 +109,9 @@ def UpdateList(request):
         if index_page_permitted(request):
             params = {'filter':'events'}
             events = GetEvents(params)
-            list_values = dict(enumerate(events , start=1))
+            list_values = {}
+            if events is not None:
+                list_values = dict(enumerate(events , start=1))
             return render(request, 'update_cp.html',{"data": list_values})
         else:
             return render(request, 'login.html')
