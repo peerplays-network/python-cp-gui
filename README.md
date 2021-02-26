@@ -37,3 +37,7 @@ The instance will now be available at  localhost:9010
 ## Docs
 openAPI 2.0 documentation is available at /swagger and /redoc
 
+## Uninsallation
+Delete the python-cp-gui folder
+
+
