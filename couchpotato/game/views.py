@@ -18,6 +18,7 @@ def GetEvents(params={}):
         if params["filter"] == "events":
             try:
                 rDict = cp.EventsAllSortedForApi()
+                rDict = cp.EventsAllWithEventGroupName(rDict)
             except Exception as e:
                 rDict["status"] = "error"
                 rDict["error"] = str(e)
@@ -63,6 +64,7 @@ def CreatePotato(record):
     return rDict
 
 def Update(record):
+    print('in Update')
     rDict = {}
     try:
         homeScore = None
@@ -84,8 +86,9 @@ def Update(record):
     try:
         cp.UpdateForApi(event, call, homeScore, awayScore)
     except Exception as e:
-        rDict["status"] = "error"
+        rDict["status"] = "Error at game/view/Update line 88"
         rDict["error"] =str(e)
+        print(e)
     return rDict
 
 
@@ -93,6 +96,7 @@ def Update(record):
 
 
 def UpdatePotato(record):
+    print("in UpdatePotato")
     rDict = {}
     try:
         homeScore = None
@@ -109,18 +113,22 @@ def UpdatePotato(record):
         if "awayScore" in record.keys():
             awayScore = record["awayScore"]
     except Exception as e:
-        rDict["status"] = "error"
+        rDict["status"] = "Error at game/view/UpdatePotato line 114"
         rDict["error"] = str(e)
+        print(rDict)
+        print(e)
         return rDict
-    try:
-        print("Event > " ,record["event"] , '\n Type ', type(record["event"]))
-        print("Call ", record["call"])
-        print("username " , potatouser)
-        print("homeScore " , homeScore)
-        print("awayScore " , awayScore)
+#    try:
+#        print("Event > " ,record["event"] , '\n Type ', type(record["event"]))
+#        print("Call ", record["call"])
+#        print("username " , potatouser)
+#        print("homeScore " , homeScore)
+#        print("awayScore " , awayScore)
 
-        cp.UpdateForApiWithPotato(event, call, potatouser,homeScore, awayScore)
-    except Exception as e:
-        rDict["status"] = "error"
-        rDict["error"] =str(e)
+    cp.UpdateForApiWithPotato(event, call, potatouser,homeScore, awayScore)
+#    except Exception as e:
+#        rDict["status"] = "Error at game/view/UpdatePotato line 127"
+#        rDict["error"] =str(e)
+#        print(rDict)
+#        print(e)
     return rDict

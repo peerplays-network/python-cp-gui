@@ -57,7 +57,7 @@
                 <th>Name</th>
                 <th>Season</th>
                 <th>Start Time</th>
-                <th>Event Group ID</th>
+                <th>Event Group</th>
                  <th>Scores</th>
                 <th>Status</th>
                 <th>In Progress</th>
@@ -116,7 +116,7 @@
                    
                 </script>
 
-                 <td>{{b.event_group_id}}</td>
+                 <td>{{b.event_group_name}}</td>
 				 <td>{{b.scores}}</td>
 
                 <td>{{b.status}}</td>
@@ -357,7 +357,10 @@
                     "targets": [ 5],
                     "visible": false,
                  },
-            
+                 {
+                    "targets": [ 2],
+                    "visible": false,
+                 },
             ],
 
               responsive: {
