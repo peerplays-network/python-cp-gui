@@ -10,6 +10,7 @@ import _thread
 import time
 
 leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+# leagueIds = [4380]
 # 4380 : NHL # Ice Hockey
 # 4424 : MLB # Baseball
 # 4328 : EPL
@@ -114,6 +115,9 @@ class Feed:
             incident["call"] = INCIDENT_CALLS[1]
             print('Second Half', "to in_progress", event["strFilename"])
 
+        elif isinstance(event["strStatus"], type(None)):
+            print("Event strStatus None, discarded")
+            return incident
         else:
             self.failedEvents.append(event)
             print("Call Not Managed:")
