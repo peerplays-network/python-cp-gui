@@ -116,7 +116,7 @@ class Feed:
             print('Second Half', "to in_progress", event["strFilename"])
 
         elif isinstance(event["strStatus"], type(None)):
-            print("Event strStatus None, discarded")
+            print("Event strStatus None, discarded, call not decided")
             return incident
         else:
             self.failedEvents.append(event)
@@ -186,13 +186,16 @@ class Feed:
                     time.sleep(60)
             event = events[k]
             toCp = self.ToCp(event)
-            try:
-                self.cp.Push2bosAll(toCp)
-            except Exception as e:
-                # self.failedEvents.append(toCp)
-                self.failedEvents.append(event)
-                print("Failed Event: ", k, toCp)
-                print(e)
+            if "call" in toCp.keys():
+                try:
+                    self.cp.Push2bosAll(toCp)
+                except Exception as e:
+                    # self.failedEvents.append(toCp)
+                    self.failedEvents.append(event)
+                    print("Failed Event: ", k, toCp)
+                    print(e)
+            else:
+                print("Call not decided")
         return
 
     def PushLeague(self, leagueid, call="create"):
