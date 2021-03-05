@@ -120,7 +120,7 @@ class Feed:
             print("None elif case and event created")
 
         elif (event["strStatus"] == "Second Half") or (
-                event["strStaus"] == "Q3"):
+                event["strStatus"] == "Q3"):
             incident["call"] = INCIDENT_CALLS[1]
             print('Second Half', "to in_progress", event["strFilename"])
 
