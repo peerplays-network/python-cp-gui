@@ -44,6 +44,8 @@ apiTeamsFromLeagueId = "lookup_all_teams.php?id="
 
 apiAllLeagues = "all_leagues.php"
 
+apiEventFromId = "lookupevent.php?id="
+
 
 class Feed:
 
@@ -53,6 +55,12 @@ class Feed:
         self.constCheckPeriod = 60 * 60 * 24  # in seconds
         self.maxOpenProposals = 1
         pass
+
+    def EventFromId(self, eventId):
+        url = apiBase + apiEventFromId + str(eventId)
+        event = requests.get(url).text
+        event = json.loads(event)
+        return event
 
     def Past15(self, leagueid):
         url = apiBase + apiEventsPastLeague + str(leagueid)
@@ -111,7 +119,8 @@ class Feed:
             incident["call"] = INCIDENT_CALLS[0]
             print("None elif case and event created")
 
-        elif (event["strStatus"] == "Second Half"):
+        elif (event["strStatus"] == "Second Half") or (
+                event["strStaus"] == "Q3"):
             incident["call"] = INCIDENT_CALLS[1]
             print('Second Half', "to in_progress", event["strFilename"])
 
