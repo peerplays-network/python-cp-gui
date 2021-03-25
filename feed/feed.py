@@ -10,6 +10,7 @@ import _thread
 import time
 
 leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+# leagueIds = [4380]
 # 4380 : NHL # Ice Hockey
 # 4424 : MLB # Baseball
 # 4328 : EPL
@@ -43,6 +44,8 @@ apiTeamsFromLeagueId = "lookup_all_teams.php?id="
 
 apiAllLeagues = "all_leagues.php"
 
+apiEventFromId = "lookupevent.php?id="
+
 
 class Feed:
 
@@ -52,6 +55,12 @@ class Feed:
         self.constCheckPeriod = 60 * 60 * 24  # in seconds
         self.maxOpenProposals = 1
         pass
+
+    def EventFromId(self, eventId):
+        url = apiBase + apiEventFromId + str(eventId)
+        event = requests.get(url).text
+        event = json.loads(event)
+        return event
 
     def Past15(self, leagueid):
         url = apiBase + apiEventsPastLeague + str(leagueid)
@@ -110,10 +119,14 @@ class Feed:
             incident["call"] = INCIDENT_CALLS[0]
             print("None elif case and event created")
 
-        elif (event["strStatus"] == "Second Half"):
+        elif (event["strStatus"] == "Second Half") or (
+                event["strStatus"] == "Q3"):
             incident["call"] = INCIDENT_CALLS[1]
             print('Second Half', "to in_progress", event["strFilename"])
 
+        elif isinstance(event["strStatus"], type(None)):
+            print("Event strStatus None, discarded, call not decided")
+            return incident
         else:
             self.failedEvents.append(event)
             print("Call Not Managed:")
@@ -182,13 +195,16 @@ class Feed:
                     time.sleep(60)
             event = events[k]
             toCp = self.ToCp(event)
-            try:
-                self.cp.Push2bosAll(toCp)
-            except Exception as e:
-                # self.failedEvents.append(toCp)
-                self.failedEvents.append(event)
-                print("Failed Event: ", k, toCp)
-                print(e)
+            if "call" in toCp.keys():
+                try:
+                    self.cp.Push2bosAll(toCp)
+                except Exception as e:
+                    # self.failedEvents.append(toCp)
+                    self.failedEvents.append(event)
+                    print("Failed Event: ", k, toCp)
+                    print(e)
+            else:
+                print("Call not decided")
         return
 
     def PushLeague(self, leagueid, call="create"):
