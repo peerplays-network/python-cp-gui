@@ -5,7 +5,7 @@ from bos_incidents.datestring import date_to_string, string_to_date
 from datetime import datetime, timezone
 import json
 # import pandas as pd
-from cp_local import Cp, rpc, config
+from cp_local import Cp, rpc, config, normalize, substitution
 import _thread
 import time
 
@@ -87,11 +87,11 @@ class Feed:
             print("Postponed Event")
 
         elif (
-                event["strStatus"] == "FT") or (
-                event["strStatus"] == "Match Finished") or (
-                event["strStatus"] == "AP") or (
-                event["strStatus"] == "AOT") or (
-                    (now - startTime).days > 1):
+            event["strStatus"] == "FT") or (
+            event["strStatus"] == "Match Finished") or (
+            event["strStatus"] == "AP") or (
+            event["strStatus"] == "AOT") or (
+            (now - startTime).days > 1):
             incident["call"] = INCIDENT_CALLS[3]
             incident["arguments"] = dict()
             incident["arguments"]["home_score"] = event["intHomeScore"]
@@ -227,6 +227,35 @@ class Feed:
         self.flagWhileForThread = "run"
         _thread.start_new_thread(self.WhileForThread, ())
 
+    def EventsToDf(self, events):
+        pass
+
+    def MatchingEvent(self, eventsFromFeed, eventFromChain):
+        for eventFromFeed in eventsFromFeed:
+            toCp = self.ToCp(eventFromFeed)
+            toCp = normalize(toCp)
+            if toCp["id"]["start_time"][:-1] == eventFromChain["start_time"]:
+                eventScheme = self.cp.EventScheme(toCp["id"]["sport"], toCp[
+                    "id"]["event_group_name"])
+                home = toCp["id"]["home"]
+                away = toCp["id"]["away"]
+                homeAway = substitution([home, away], eventScheme)
+                if homeAway == eventFromChain["name"][0][1]:
+                    return toCp
+        return None
+
+    def MatchingEvents(self, leagueId):
+        eventsFromFeed = self.Past15(4328)
+        eventsFromChain = self.cp.EventsAllSorted()
+        matchingEvents = []
+        for k in range(len(eventsFromChain)):
+            eventFromChain = eventsFromChain.iloc[k]
+            # for eventFromChain in eventsFromChain:
+            toCp = self.MatchingEvent(eventsFromFeed, eventFromChain)
+            if not isinstance(toCp, type(None)):
+                matchingEvents.append([eventFromChain, toCp])
+        return matchingEvents
+
 
 class Updater:
 
@@ -269,6 +298,12 @@ class Updater:
     def UpdateInThread(self):
         self.flagWhileForThread = "run"
         _thread.start_new_thread(self.WhileForUpdate, ())
+
+
+class Compare:
+
+    def __init__(self):
+        pass
 
 
 class FeedDetails:
