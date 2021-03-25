@@ -87,11 +87,11 @@ class Feed:
             print("Postponed Event")
 
         elif (
-            event["strStatus"] == "FT") or (
-            event["strStatus"] == "Match Finished") or (
-            event["strStatus"] == "AP") or (
-            event["strStatus"] == "AOT") or (
-            (now - startTime).days > 1):
+                event["strStatus"] == "FT") or (
+                    event["strStatus"] == "Match Finished") or (
+                        event["strStatus"] == "AP") or (
+                            event["strStatus"] == "AOT") or (
+                                (now - startTime).days > 1):
             incident["call"] = INCIDENT_CALLS[3]
             incident["arguments"] = dict()
             incident["arguments"]["home_score"] = event["intHomeScore"]
@@ -244,16 +244,23 @@ class Feed:
                     return toCp
         return None
 
-    def MatchingEvents(self, leagueId):
-        eventsFromFeed = self.Past15(4328)
-        eventsFromChain = self.cp.EventsAllSorted()
+    def MatchingEvents(self, leagueIds):
+        eventsFromFeed = []
+        for leagueId in leagueIds:
+            # print(leagueId)
+            eventsFromFeed = eventsFromFeed + self.Past15(leagueId)
+        eventsFromChain = self.cp.EventsAllSortedForApi()
         matchingEvents = []
         for k in range(len(eventsFromChain)):
-            eventFromChain = eventsFromChain.iloc[k]
+            # eventFromChain = eventsFromChain.iloc[k]
+            eventFromChain = eventsFromChain[k]
             # for eventFromChain in eventsFromChain:
             toCp = self.MatchingEvent(eventsFromFeed, eventFromChain)
-            if not isinstance(toCp, type(None)):
-                matchingEvents.append([eventFromChain, toCp])
+            # if not isinstance(toCp, type(None)):
+            matchingEvent = dict()
+            matchingEvent["eventFromChain"] = eventFromChain
+            matchingEvent["eventFromFeed"] = toCp
+            matchingEvents.append(matchingEvent)
         return matchingEvents
 
 
