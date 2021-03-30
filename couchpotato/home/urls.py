@@ -13,6 +13,7 @@ urlpatterns = [
     path('', views.Home, name='index'),
     path('create/<int:num>', views.CreateList, name='create'),
     path('u/', views.UpdateList, name='update_new'),
+    path('uv/', views.UpdateListVersionOne, name='updateversion1'),
     path('settingspanel/', views.admin, name='admin'),
     path('save_features', views.SaveApplicationFeatures, name='savefeatures'),
     path('save_user_status', views.SaveUserStatus, name='savefeatures'),
