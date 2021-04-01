@@ -131,8 +131,8 @@ def UpdateListVersionOne(request):
     try:
         if index_page_permitted(request):
             params = {'filter':'events'}
-            # events = getstaticEvents()
-            events = GetMatchingEvents()
+            events = getstaticEvents()
+            # events = GetMatchingEvents()
             # events = []
             # events = None
             list_values = {}
@@ -249,7 +249,7 @@ def UpdatePost(request):
     # result={}
     result = UpdatePotato(data)
     if(len(result) == 0) :
-        return JsonResponse({'success':'Update Done as ' + call})
+        return JsonResponse({'success':event + " : " + call})
     else:
         return JsonResponse({'success':'Error'})
 
