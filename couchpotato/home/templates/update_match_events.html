@@ -339,7 +339,7 @@
          $('#utcgen_date_time').html(utc.toString())
 
         var table = $('#example').DataTable( {
-
+            "ordering": false,
             "initComplete": function(settings, json) {
                  $("#example_wrapper").removeClass('form-inline');
                 

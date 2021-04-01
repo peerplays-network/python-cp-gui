@@ -131,8 +131,10 @@ def UpdateListVersionOne(request):
     try:
         if index_page_permitted(request):
             params = {'filter':'events'}
-            events = getstaticEvents()
-            # events = GetMatchingEvents()
+            # events = getstaticEvents()
+            # print(events)
+            events = GetMatchingEvents()
+            # print(events)
             # events = []
             # events = None
             list_values = {}
