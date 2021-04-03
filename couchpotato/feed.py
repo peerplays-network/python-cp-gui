@@ -9,7 +9,8 @@ from cp_local import Cp, rpc, config, normalize, substitution
 import _thread
 import time
 
-leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+# leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+leagueIds = [4328, 4391, 4387, 4380, 4335, 4332, 4331]
 # 4380 : NHL # Ice Hockey
 # 4424 : MLB # Baseball
 # 4328 : EPL
@@ -136,6 +137,7 @@ class Feed:
         # if len(strTime.split(":")[0]) == 1:
         #     strTime = "0" + strTime
         startTime = dateEvent + "T" + strTime + "Z"
+        # print(startTime, type(startTime))
         startTime = date_to_string(parse(startTime))
         incident = self.CreateIncident(
                 sport, eventGroup, home, away, startTime)
@@ -232,6 +234,7 @@ class Feed:
 
     def MatchingEvent(self, eventsFromFeed, eventFromChain):
         for eventFromFeed in eventsFromFeed:
+            self._eventFromFeed = eventFromFeed
             toCp = self.ToCp(eventFromFeed)
             toCp = normalize(toCp)
             if toCp["id"]["start_time"][:-1] == eventFromChain["start_time"]:

@@ -81,13 +81,14 @@
                 <th>Last Name</th>
                 <th>Email Address</th>
                 <th>Active</th>
+                <th>Delete</th>
                  
             </tr>
         </thead>
         <tbody>
           {% for  u in users %}
             <tr>
-                <td>{{ u.username }} </td>
+                <td class=name>{{ u.username }} </td>
                 <td>{{ u.first_name}}</td>
                 <td>{{u.last_name}}</td>
                 <td>{{u.email}}</td>
@@ -102,6 +103,10 @@
                 </td>
 
                 {%endif%}
+                <td>
+                  <button   class="btn btn-info" id={{u.id}} >Delete </button>
+                </td>
+
 
                  
             </tr>
@@ -153,6 +158,33 @@
 
         });
 
+        $(".btn").click(function() {
+            // alert((this).id)
+          console.log((this).id)
+          var r = confirm("Do you need to delete the user " + $(this).closest('tr').find('.name').text());
+            if (r == true) {
+                
+              // $(this).closest('tr').remove()
+              var row = $(this).closest('tr')
+
+                $.post("/delete_user",
+                    {
+                      user_id: (this).id,
+                      csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                    },
+                    function(data){
+                        // $(this).closest('tr').remove()
+                        row.remove()
+                        alert(data.success)
+                        
+                    });
+
+                
+
+            }  
+           
+        });
+        
 
             $( "#autoSizingCheck" ).click(function() {
             console.log($('#autoSizingCheck').is(":checked"))
@@ -209,7 +241,7 @@
 
 
 
-        } );
+      } );
 
           
 

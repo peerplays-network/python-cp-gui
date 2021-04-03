@@ -16,6 +16,7 @@ urlpatterns = [
     path('uv/', views.UpdateListVersionOne, name='updateversion1'),
     path('settingspanel/', views.admin, name='admin'),
     path('save_features', views.SaveApplicationFeatures, name='savefeatures'),
+    path('delete_user', views.DeleteUser, name='delete_user'),
     path('save_user_status', views.SaveUserStatus, name='savefeatures'),
     path('logout/', views.LogoutUser, name='logout'),
     path('login/', views.AuthenticateUser, name='login'),

@@ -1,13 +1,13 @@
- 
+
 # Create your views here.
-from django.http import Http404 , JsonResponse , HttpResponseRedirect
+from django.http import Http404, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 import json
 import requests
 import pytz, datetime
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from home.forms import SignUpForm
+from home.forms import SignUpForm ,LoginForm
 from django.contrib.auth.models import User
 from home.models import ApplicationFeatures 
 from django.contrib.auth import logout
@@ -25,9 +25,10 @@ def AuthenticateUser(request):
     param: request
     description: Loads the login page and does the authentication.
     '''
-    
     if request.method == 'POST':
-        form = AuthenticationForm(request=request, data=request.POST)
+        form = LoginForm(request=request, data=request.POST)
+
+        
         if form.is_valid():
             username = form.cleaned_data.get('username').strip()
             password = form.cleaned_data.get('password')
@@ -35,17 +36,12 @@ def AuthenticateUser(request):
             if user is not None:
                 login(request, user)
                 return redirect('/')
-            else:
-                if username is None or username is '':
-                    messages.error(request, 'Username cannot be blank')
-                else:
-                    messages.error(request, "Invalid username or password.")
+            
         else:
-            username = request.POST.get('username').strip()
-            if username is None or username is '':
-                messages.error(request, 'Username cannot be blank')
-            else:
-                messages.error(request, "Invalid username or password.")
+            print("Invalid")
+            for key , value in form.errors.items():
+                error = value
+            messages.error(request, error)
  
     return HttpResponseRedirect('/')
 
@@ -72,24 +68,19 @@ def LogoutSwagger(request):
 def SignUp(request):
     '''
     param: request
-    description :  Loads the registration page and does the sign up and authentication.
+    description :  Loads the registration page and does the sign up. 
+    New user is set inactive intially before admin approval. 
     '''
     # print("In sign up ")
     # try:
     if allow_register():
-        # print("in allow register " , request.method )
         if request.method == 'POST':   
             form = SignUpForm(request.POST)
-            # print(form)
             if form.is_valid():
-                # print("Form is valid")
-                form.save()
-                username = form.cleaned_data.get('username')
-                raw_password = form.cleaned_data.get('password1')
-                user = authenticate(username=username, password=raw_password)
-                if user is not None:
-                    login(request, user)
-                    return redirect('/')
+                user = form.save()
+                user.is_active = False
+                user.save() 
+                return redirect('/')
         else:
             form = SignUpForm()
         return render(request, 'register.html',{'form':form})
@@ -153,13 +144,13 @@ def Home(request):
     description : To load home page
     '''
 
-    try:
-        if index_page_permitted(request):
-            return render(request, 'index.html')
-        elif register_login_page_permitted():
-            return render(request, 'login.html')
-    except:
-        return render(request, '404.html')
+    # try:
+    if index_page_permitted(request):
+        return render(request, 'index.html')
+    elif register_login_page_permitted():
+        return render(request, 'login.html')
+    # except:
+    #     return render(request, '404.html')
 
 def CreateList(request,num=1):
     '''
@@ -275,6 +266,19 @@ def admin(request):
         return render(request, 'login.html')
 
 
+def DeleteUser(request):
+    '''
+    param : request
+    description : Delete user
+    '''
+
+    user_id = request.POST.get("user_id")
+    print("User Id " , user_id)
+    user = User.objects.get(id=user_id)
+    user.delete()
+    return JsonResponse({'success':'Success'})   
+
+
 def SaveApplicationFeatures(request):
     '''
     param : request
@@ -287,12 +291,12 @@ def SaveApplicationFeatures(request):
     try:
         value_sign = None
         value_user_limit = None
-        if req_signup is not '':
+        if req_signup != '':
             if(req_signup == 'true'):value_sign = True
             else:value_sign = False
             signup, created = ApplicationFeatures.objects.update_or_create(id=1, defaults={'signup':value_sign})
         
-        if req_limit_users is not '':
+        if req_limit_users != '':
             if(req_limit_users == 'true'):value_user_limit = True
             else:value_user_limit = False
             limit_users, created = ApplicationFeatures.objects.update_or_create(id=1, defaults={'limit_user_signup':value_user_limit})
