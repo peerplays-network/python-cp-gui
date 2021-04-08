@@ -115,7 +115,7 @@ def getstaticEvents():
     return newDict
   
 
-def UpdateListVersionOne(request):
+def UpdateListForDebug(request):
     '''
     param : request
     description : To load update page
@@ -124,15 +124,32 @@ def UpdateListVersionOne(request):
         if index_page_permitted(request):
             params = {'filter':'events'}
             # events = getstaticEvents()
-            # print(events)
             events = GetMatchingEvents()
-            # print(events)
-            # events = []
-            # events = None
             list_values = {}
             if events is not None:
                 list_values = dict(enumerate(events , start=1))
-            return render(request, 'update_match_events.html',{"data": list_values})
+            return render(request, 'update_debug.html',{"data": list_values})
+        else:
+            return render(request, 'login.html')
+    except:
+        return render(request, '404.html')
+
+
+
+def UpdateListSimple(request):
+    '''
+    param : request
+    description : To load update page
+    '''
+    try:
+        if index_page_permitted(request):
+            params = {'filter':'events'}
+            # events = getstaticEvents()
+            events = GetMatchingEvents()
+            list_values = {}
+            if events is not None:
+                list_values = dict(enumerate(events , start=1))
+            return render(request, 'update_simple.html',{"data": list_values})
         else:
             return render(request, 'login.html')
     except:
