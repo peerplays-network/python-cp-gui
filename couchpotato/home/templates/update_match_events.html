@@ -65,7 +65,9 @@
                  
 
                 <th>Event on Chain</th>
+                <th>Event</th>
                 <th>Update from Feed</th>
+                <th>Feed</th>
                 <th>Scores</th>
                 <th>Call</th>
                 <th>Start Time in Local Time</th>
@@ -76,17 +78,64 @@
             {% for  a , b  in data.items %}
                    
             <tr>
-                <td style="width:25%">
+                <td style="width:17%">
                     {{b.eventFromChain}}
                 </td>
-               
-                <td style="width:25%">
+                <td style="width:18%">
+                    <ul>
+                        <li>
+                            <label>Name </label> <font style="color:darkcyan;font-weight: bold;"> {{b.eventFromChain.name.0.1}} </font>
+                        </li>
+                        <li>
+                            <label >Start Time </label> <font style="color:grey"> {{b.eventFromChain.start_time}} </font>
+                        </li>
+                        <li>
+                            <label >Scores </label> <font style="color:green">{{b.eventFromChain.scores}} </font>
+                        </li>
+                        <li>
+                            <label >Status </label> <font style="color:royalblue"> {{b.eventFromChain.status}} </font>
+                        </li>
+                        <li>
+                            <label >Sport </label>  <font style="color:olive"> {{b.eventFromChain.sport}} </font>
+                        </li>
+                    </ul>
+                        
+                        
+                </td>
+                <td style="width:17%">
                     {{b.eventFromFeed}}
                  </td>
+                 <td style="width:17%">
+                    {% if b.eventFromFeed is not none%}
+                    <ul>
+                        <li>
+                            <label>Sport </label> <font style="color:darkcyan;font-weight: bold;margin-left:10px"> {{b.eventFromFeed.id.sport}} </font>
+                        </li>
+                        <li>
+                            <label >Start Time </label> <font style="color:grey;margin-left:10px"> {{b.eventFromFeed.id.start_time}} </font>
+                        </li>
+                        <li>
+                            <label >Home </label> <font style="color:royalblue;margin-left:10px">{{b.eventFromFeed.id.home}} </font>
+                        </li>
+                        <li>
+                            <label >Away </label> <font style="color:royalblue;margin-left:10px"> {{b.eventFromFeed.id.away}}  </font>
+                        </li>
+                        <li>
+                            <label >Home Score </label>  <font style="color:red;margin-left:10px"> {{b.eventFromFeed.arguments.home_score}} </font>
+                        </li>
+                        <li>
+                            <label >Away Score </label>  <font style="color:red;margin-left:10px"> {{b.eventFromFeed.arguments.away_score}} </font>
+                        </li>
+                        <li>
+                            <label > Result </label>  <font style="color:olive;margin-left:10px"> {{b.eventFromFeed.call}} </font>
+                        </li>
+                    </ul>
+                    {% endif %}
+                 </td>
                 
-                 <td style="width:20%">
+                 <td style="width:12%">
                      Home Score : <input type=text class=home value="{{b.eventFromFeed.arguments.home_score}}" /> 
-                     <br>
+                     <br><br>
                      Away Score  : <input type="text" class=away value="{{b.eventFromFeed.arguments.away_score}}" />
                 </td>
                 

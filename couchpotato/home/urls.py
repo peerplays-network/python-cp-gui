@@ -12,6 +12,7 @@ from django.views.static import serve
 urlpatterns = [
     path('', views.Home, name='index'),
     path('create/<int:num>', views.CreateList, name='create'),
+    path('select/', views.LoadSelectOptions, name='createselect'),
     path('u/', views.UpdateList, name='update_new'),
     path('uv/', views.UpdateListVersionOne, name='updateversion1'),
     path('settingspanel/', views.admin, name='admin'),
