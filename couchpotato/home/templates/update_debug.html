@@ -96,6 +96,9 @@
                             <label >Status </label> <font style="color:royalblue"> {{b.eventFromChain.status}} </font>
                         </li>
                         <li>
+                            <label >Group </label> <font style="color:brown"> {{b.eventFromChain.event_group_name}} </font>
+                        </li>
+                        <li>
                             <label >Sport </label>  <font style="color:olive"> {{b.eventFromChain.sport}} </font>
                         </li>
                     </ul>
@@ -110,6 +113,9 @@
                     <ul>
                         <li>
                             <label>Sport </label> <font style="color:darkcyan;font-weight: bold;margin-left:10px"> {{b.eventFromFeed.id.sport}} </font>
+                        </li>
+                        <li>
+                            <label>Group </label> <font style="color:brown;margin-left:10px"> {{b.eventFromFeed.id.event_group_name}} </font>
                         </li>
                         <li>
                             <label >Start Time </label> <font style="color:grey;margin-left:10px"> {{b.eventFromFeed.id.start_time}} </font>
