@@ -68,6 +68,7 @@ def substitution(teams, scheme):
 class Cp():
 
     def __init__(self):
+        self.maxOpenProposals = 2
         self.delayBetweenBosPushes = 1  # in seconds
         self.bookiesports = BookieSports(chainName)
         pass
@@ -262,7 +263,7 @@ class Cp():
             eventGroup = rpc.get_object(event_group_id)
 
             event["event_group_name"] = dict(eventGroup["name"])["identifier"]
-            # event["event_group_name"] = eventGroup["name"][1][1] 
+            # event["event_group_name"] = eventGroup["name"][1][1]
             sport = rpc.get_object(eventGroup["sport_id"])
             sport = dict(sport["name"])["identifier"]
             event["sport"] = sport
@@ -665,6 +666,14 @@ class Cp():
         incident = normalize(incident, True)
         self._incident = incident
         logger.info(str(incident))
+
+        while True:
+            proposalsOpen = rpc.get_proposed_transactions("1.2.1")
+            print("Len proposalsOpen: ", len(proposalsOpen), " / ", "self.maxOpenProposals")
+            if len(proposalsOpen) <= self.maxOpenProposals:
+                break
+            else:
+                time.sleep(60)
 
         # r = requests.post(url=bos["local"], json=incident)
         rng = np.random.default_rng()
