@@ -1,5 +1,6 @@
 from home.models import ApplicationFeatures 
 
+#limit_user_signup is the feature added to prevent the create account option in the software. 
 
 def index_page_permitted(request):
     app_feature = ApplicationFeatures.objects.filter(id=1).first()

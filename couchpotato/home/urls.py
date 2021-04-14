@@ -12,9 +12,13 @@ from django.views.static import serve
 urlpatterns = [
     path('', views.Home, name='index'),
     path('create/<int:num>', views.CreateList, name='create'),
+    path('select/', views.LoadSelectOptions, name='createselect'),
     path('u/', views.UpdateList, name='update_new'),
+    path('udebug/', views.UpdateListForDebug, name='udebug'),
+    path('usimple/', views.UpdateListSimple, name='udebug'),
     path('settingspanel/', views.admin, name='admin'),
     path('save_features', views.SaveApplicationFeatures, name='savefeatures'),
+    path('delete_user', views.DeleteUser, name='delete_user'),
     path('save_user_status', views.SaveUserStatus, name='savefeatures'),
     path('logout/', views.LogoutUser, name='logout'),
     path('login/', views.AuthenticateUser, name='login'),
