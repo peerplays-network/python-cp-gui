@@ -187,13 +187,13 @@ class Cp():
         print("Select Event Group")
         self._eventGroup = self.GetKey(self._eventGroupsList)
         self._eventGroupIdentifier = self.bookiesports[self._sport][
-                "eventgroups"][self._eventGroup]["identifier"]
+            "eventgroups"][self._eventGroup]["identifier"]
         # self._eventGroupIdentifier = self.bookiesports[self._sport][
         # "eventgroups"][self._eventGroup]["aliases"][0]
         self._participantKey = self.bookiesports[self._sport]["eventgroups"][
                 self._eventGroup]["participants"]
         self._participants, participantDisplays = self.GetParticipants(
-                self._sport, self._participantKey)
+            self._sport, self._participantKey)
         print("")
         print("Select Home Team")
         self._home = self.GetKeyParticipant(
@@ -259,7 +259,7 @@ class Cp():
         for event in eventsAll:
             event_group_id = event["event_group_id"]
             # event["event_group_name"] = rpc.get_object(
-                    # event_group_id)["name"][1][1]
+            # event_group_id)["name"][1][1]
             eventGroup = rpc.get_object(event_group_id)
 
             event["event_group_name"] = dict(eventGroup["name"])["identifier"]
@@ -669,7 +669,8 @@ class Cp():
 
         while True:
             proposalsOpen = rpc.get_proposed_transactions("1.2.1")
-            print("Len proposalsOpen: ", len(proposalsOpen), " / ", "self.maxOpenProposals")
+            print("Len proposalsOpen: ",
+                  len(proposalsOpen), " / ", self.maxOpenProposals)
             if len(proposalsOpen) <= self.maxOpenProposals:
                 break
             else:
@@ -693,6 +694,11 @@ class Cp():
             time.sleep(self.delayBetweenBosPushes)
         print("thread finished")
         return
+
+    def OpenProposalsCount(self):
+        openProposalsCount = rpc.get_proposed_transactions("1.2.1")
+        return openProposalsCount, self.maxOpenProposals
+
 
     def Push2bosBetter(self, incident, providerNames):
         string = incident_to_string(incident)
