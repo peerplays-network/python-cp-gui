@@ -20,6 +20,9 @@
       /* body {
         font-size: 17px;
       } */
+      select{
+          width: 30%;
+      }
     </style>
    </head>
   <body>
@@ -30,25 +33,60 @@
 
     <div class="container" style="margin-top: 30px;align-items: center;">
 		
-    <h4 id=local_date_time></h4>
+		<h4 id=local_date_time></h4>
+    
     <h4 >Number of Open Proposals: {{ proposals.0 }} / {{ proposals.1 }} </h4>
-
       
       <div class="form-group" id=create_one >
 
-        <h3> {{heading}} </h3>
+        <h3>  </h3>
        
-         <div id='results_div' style=" min-height: 500px;border:1px solid rgb(170, 77, 40);">
-
-          <form action="" style="padding: 50px;" id={{question_id}}>
-            {% for  key, value  in list.items %}
-                <input type="radio" value={{key}} /> <label> {{value}} </label>
-                <br>
-            {% endfor %}
+         <div id='results_div' style=" min-height: 500px;border:1px solid rgb(170, 77, 40);padding:50px">
             
-            {% if islast %}
-              <!-- <input type="text" class="form-control" id="example"> <label> Select Date </label> -->
+            <div>
+            <h3> Select Sport</h3>
+            <select  class=games  id=1>
+              <option > Select One </option>
+                {% for  key, value  in list.items %}
+                 <option value={{key}}> {{value}} </option>
+                {% endfor %}
 
+             </select>
+            <br>
+            </div>
+            
+
+             <div>
+            <h3> Select League</h3>
+            <select  class=groups  id=2>
+              <option > Select One </option>
+                </select>
+            <br>
+            </div>
+            
+            <div>
+            <h3> Home </h3>
+            <select  class=home  id=3>
+              <option > Select One </option>
+                </select>
+            <br>
+            </div>
+
+            <div>
+            <h3> Away </h3>
+            <select  class=away  id=4>
+              <option > Select One </option>
+                </select>
+            <br>
+            </div>
+             
+
+             
+            <div>
+              <h3> Start Time</h3>
+             
+
+  
               <div class="form-group">
                 <!-- <label class="control-label">Select Date</label> -->
                 <div class='input-group date' id='datetimepicker1'>
@@ -57,32 +95,21 @@
                    <span class="glyphicon glyphicon-calendar"></span>
                    </span>
                 </div>
-             </div>
+             </div> </div>
             
             <br>
             
-            {% endif %}
-
-          </form>
+ 
+         
           
     
         </div>
-        {% if question_id  > 1 %}
-            <button class="btn btn-primary" type="button" style="margin-top: 20px;" id=back>Back</button>
-        {% endif %}
         
-        {% if not islast %}
-         
-            <button class="btn btn-primary" type="button" style="margin-top: 20px;" id=next>Next</button>
-
-        {% endif %}
-
-        {% if  islast %}
 
         
             <button class="btn btn-primary" type="button" style="margin-top: 20px;" id=create_submit>Submit</button>
 
-        {% endif %}
+         
         <span>
           <a  style="background:lavender;float: right;margin-top: 25px;" id=home href='/'>Return to Home</a>
         </span>
@@ -135,21 +162,59 @@
 
 	  })
 
-    $('input[type=radio]').change(function()
-    {
-        if (this.checked)
-        {
-             var element = this
-            $('input[type=radio]').each(function(){
-                // console.log($(this))
-                if(element != this){
-                  $(this).prop('checked',false)
-                }
-            });
+      $('select').on('change', function() {
+        
 
+        // console.log("selected value" , this.value );
+        // console.log("selected text" , $(this).find("option:selected").text());
+        // console.log((this).id)
+        id = parseInt((this).id)
+        
+        new_next_select_id = id + 1
+        
+        if (id == 1 || id == 2){
+          $('#3').html('<option>Select One</option>')
+          $('#4').html('<option>Select One</option>')
         }
+        sport = $('.games').find("option:selected").text()
+        groups = $('.groups').find("option:selected").text()
+        home =  $('.home').find("option:selected").text()
+        away =  $('.away').find("option:selected").text()
+        // console.log(sport)
+        // console.log(groups)
+        // console.log(home)
+        // console.log(away)
+         
 
-    });
+        
+        $.post("/select/",
+        {
+            num: new_next_select_id,
+            sport:sport,
+            eventGroup:groups,
+            home:home,
+            away:away,
+            csrfmiddlewaretoken: '{{ csrf_token }}' ,
+        },
+        function(data, status){
+
+            // console.log(data)
+            var obj = data.list
+            $('#'+new_next_select_id).html('<option>Select One</option>')
+            if (data.list[1] != 'status'){
+              Object.keys(obj).forEach(function(key) {
+                  // console.log(key, obj[key]);
+                  
+                  $('#'+new_next_select_id).append("<option value="+ key +">"+obj[key] + "</option>")
+              });
+            }
+         
+         });
+
+ 
+        });
+
+     
    
       $("#create_submit").click(function(){
 
@@ -158,64 +223,63 @@
       
         var next_num = parseInt($("form").attr("id")) + 1
         var date_val = $('#datetimepicker1 input').val()
-        var d = new Date(date_val)
-        // console.log(d.getTimezoneOffset())
-        
-        //  var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-        //  console.log("Current date ", d.toString())
-        //  console.log("To utc inbuild met" , d.toUTCString())
-        //  console.log("UTC conversion " , utc.toString())
-        //  console.log("ISO conversion " , d.toISOString())
-
+        var d = new Date(date_val) 
+        question_id = 5
 
         if (typeof date_val !== 'undefined' & date_val !== ""){
             $.post("/post_create",
             {
-              id: $("form").attr("id"),
+              id: question_id,
               optionvalue: 'date',
               optiontext : d.toISOString(),
               csrfmiddlewaretoken: '{{ csrf_token }}' ,
             },
             function(data, status){
-              alert(data.success)
-              window.location.href =  '/'
+              if (data.success == 'Posted'){
+                alert(data.message)
+              }
+              
+              // console.log(data.message)
+              // console.log(data.message.id)
+              
+              // window.location.href =  '/'
             });
         }
 
       })
     
-      $("#next").click(function(){
+      // $("#next").click(function(){
         
         
-        var selected = $("form input[type='radio']:checked");
-        var selectedtext = $("form input[type='radio']:checked").next('label:first').html()
+      //   var selected = $("form input[type='radio']:checked");
+      //   var selectedtext = $("form input[type='radio']:checked").next('label:first').html()
       
-        var next_num = parseInt($("form").attr("id")) + 1
-        // console.log(selectedtext)
+      //   var next_num = parseInt($("form").attr("id")) + 1
+      //   // console.log(selectedtext)
 
-        if (typeof selectedtext !== 'undefined'){
-           $.post("/post_create",
-            {
-              id: $("form").attr("id"),
-              optionvalue: selected.val(),
-              optiontext : selectedtext,
-              csrfmiddlewaretoken: '{{ csrf_token }}' ,
-            },
-            function(data, status){
-              window.location.href =  '/create/'+next_num
-            });
-        }
+      //   if (typeof selectedtext !== 'undefined'){
+      //      $.post("/post_create",
+      //       {
+      //         id: $("form").attr("id"),
+      //         optionvalue: selected.val(),
+      //         optiontext : selectedtext,
+      //         csrfmiddlewaretoken: '{{ csrf_token }}' ,
+      //       },
+      //       function(data, status){
+      //         window.location.href =  '/create/'+next_num
+      //       });
+      //   }
         
 
-      }); 
+      // }); 
 
-      $("#back").click(function(){
+      // $("#back").click(function(){
         
       
-        var next_num = parseInt($("form").attr("id")) - 1
-        window.location.href =  '/create/'+next_num
+      //   var next_num = parseInt($("form").attr("id")) - 1
+      //   window.location.href =  '/create/'+next_num
       
-      });
+      // });
 
      </script>
   </body>
