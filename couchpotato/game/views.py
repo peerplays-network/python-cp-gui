@@ -6,6 +6,17 @@ from django.http import Http404 , JsonResponse
 import cp_local
 cp = cp_local.Cp()
 
+from feed import Feed
+fd = Feed()
+
+def GetMatchingEvents():
+    listDist = fd.MatchingEventsAll()
+    return listDist   
+
+def GetOpenProposalsCount():
+    openproposals , maxproposals = cp.OpenProposalsCount()
+    return [openproposals ,maxproposals ]
+
 def GetEvents(params={}):
     rDict = dict()
     sport = None
@@ -132,3 +143,5 @@ def UpdatePotato(record):
 #        print(rDict)
 #        print(e)
     return rDict
+
+ 
