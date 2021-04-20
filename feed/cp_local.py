@@ -1,3 +1,5 @@
+from bos_incidents import factory, exceptions
+
 import _thread
 import time
 import numpy as np
@@ -51,6 +53,9 @@ STATUSES = ["upcoming", "in_progress", "finished"]
 # normalizer = IncidentsNormalizer(chain="elizabeth")
 normalizer = IncidentsNormalizer(chain=chainName)
 normalize = normalizer.normalize
+
+# Incident Storage
+storage = factory.get_incident_storage()
 
 
 def substitution(teams, scheme):
@@ -692,6 +697,16 @@ class Cp():
                 print(e)
                 logger.warning(api + ": failed")
             time.sleep(self.delayBetweenBosPushes)
+        try:
+            # FIXME, remove copy()
+            storage.insert_incident(incident.copy())
+        except exceptions.DuplicateIncidentException as e:
+            print(e)
+            # We merely pass here since we have the incident already
+            # alerting anyone won't do anything
+            # traceback.print_exc()
+            pass
+
         print("thread finished")
         return
 
@@ -699,6 +714,15 @@ class Cp():
         openProposalsCount = len(rpc.get_proposed_transactions("1.2.1"))
         return openProposalsCount, self.maxOpenProposals
 
+    def History(self, providerName):
+        collection = storage._get_collection(collection_name="incident")
+        historyGen = collection.find({"provider_info.name": {
+            "$eq": providerName}})
+
+        history = []
+        for doc in historyGen:
+            history.append(doc)
+        return history
 
     def Push2bosBetter(self, incident, providerNames):
         string = incident_to_string(incident)
