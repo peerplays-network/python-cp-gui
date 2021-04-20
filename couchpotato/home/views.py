@@ -11,7 +11,7 @@ from home.forms import SignUpForm ,LoginForm
 from django.contrib.auth.models import User
 from home.models import ApplicationFeatures 
 from django.contrib.auth import logout
-from game.views import GetEvents  , CreatePotato , UpdatePotato , GetMatchingEvents , GetOpenProposalsCount
+from game.views import GetEvents  , CreatePotato , UpdatePotato , GetMatchingEvents , GetOpenProposalsCount, GetHistory
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from home.utilities import index_page_permitted , register_login_page_permitted , allow_login , allow_register
@@ -157,6 +157,29 @@ def UpdateListSimple(request):
             return render(request, 'login.html')
     except:
         return render(request, '404.html')
+
+
+
+def History(request):
+    '''
+    param : request
+    description : To load update page
+    '''
+    # try:
+    if index_page_permitted(request):
+        print(request.user.username)
+        # events = getstaticEvents()
+        events = GetHistory(request.user.username)
+        # print(events)
+        proposal_value = GetOpenProposalsCount()
+        list_values = {}
+        if events is not None:
+            list_values = dict(enumerate(events , start=1))
+        return render(request, 'history.html',{"data": list_values,'proposals' : proposal_value})
+    else:
+        return render(request, 'login.html')
+    # except:
+    #     return render(request, '404.html')
 
 
 def Home(request):

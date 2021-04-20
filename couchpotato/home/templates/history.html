@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Couch Potato</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"  href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"  href="https://cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap.min.css">
+
+
+
+ 
+   <style> 
+       table td { 
+        display:  table-cell !important;
+        /* width: 10% !important; */
+        
+         }
+         
+        table th { 
+        display: table-cell  !important;
+         } 
+
+         .modal table td{
+            border: 1px solid;
+            padding:20px;
+         }
+
+         .col-sm-12{
+             overflow: auto;
+         }
+ 
+         button{
+            font-weight: bold;
+         }
+
+      .box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header .close{
+    margin: -9px 0px 0px -24px !important
+}
+ 
+ 
+
+   </style>
+</head>
+
+<body>
+    {% include "navbar.html" %}
+
+    <div class=box>
+ <div class=container-flex style="padding:20px;width:100%" >
+	 
+         <h4 id=local_date_time></h4>
+         <h4 >Number of Open Proposals: {{ proposals.0 }} / {{ proposals.1 }} </h4>
+
+
+
+
+      <div  style='margin-top:50px'>
+    <!-- <table id="example" class="table table-striped table-bordered display nowrap" style="width:100%"> -->
+        <table id="example"  class="table table-bordered display"  style="width:100%" >
+        <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>Sport</th>
+                <th>Event Group Name</th>
+                 <th>Home</th>
+                 <th>Away</th>
+                <th>Home Score</th>
+                <th>Away Score</th>
+                <th>Timestamp</th>
+                <th>Unique String</th>
+                <th>Id string</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody >
+    
+            {% for  a  in data.items %}
+           
+                   
+            <tr>
+                <td id='{{ a.1.id.start_time }}' >
+                    {{ a.1.id.start_time }}
+                </td>
+                <td  >
+                    {{ a.1.id.sport }}
+                </td>
+                <td  >
+                    {{ a.1.id.event_group_name }}
+                 </td>
+                 <td  >
+                    {{ a.1.id.home }}
+                 </td>
+                
+                 <td >
+                    {{ a.1.id.away }}
+                </td>
+                
+                <td  >
+                    {{ a.1.arguments.home_score }}
+                </td> 
+
+                <td  >
+                    {{ a.1.arguments.away_score }}
+                </td> 
+                <td  >
+                    {{ a.1.timestamp }}
+                </td> 
+                <td  >
+                    {{ a.1.unique_string }}
+                </td> 
+                <td  >
+                    {{ a.1.id_string }}
+                </td> 
+                <td  >
+                    {{ a.1.provider_info.name }}
+                </td> 
+                 <script>
+                 
+
+                    var date = convertUTCDateToLocalDate(new Date('{{ a.1.id.start_time}}')) 
+                    console.log(date)
+                    document.getElementById('{{ a.1.id.start_time}}').innerHTML = date.toLocaleString();
+                    
+                    function convertUTCDateToLocalDate(date) {
+                        
+                        // New code
+                        var newDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
+                        return newDate;
+
+                    }
+  
+                   
+                </script>
+                
+
+                  
+            </tr>
+    
+            {% endfor %}
+        </tbody>
+      
+
+    </table>
+
+   
+
+    <span>
+        <a  style="background:lavender;float: right;margin-top: 25px;" id=return_home href='/'>Return to Home</a>
+      </span>
+</div>
+
+ 
+</div>
+</div>
+ 
+</body>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap.min.js"></script>
+
+<script>
+ 
+    $(document).ready(function() {
+
+
+           var d = new Date();
+         var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+         $('#local_date_time').html(d.toLocaleString())
+         $('#utc_date_time').html(d.toUTCString())
+         $('#utcgen_date_time').html(utc.toString())
+
+        var table = $('#example').DataTable( {
+            "ordering": false,
+            "initComplete": function(settings, json) {
+                 $("#example_wrapper").removeClass('form-inline');
+                
+                 
+
+
+            },
+            
+            //   responsive: {
+            //     details: {
+            //         display: $.fn.dataTable.Responsive.display.modal( {
+                        
+            //             header: function ( row ) {
+            //                 var data = row.data();
+            //                 return 'Details for '+data[0]+' '+data[1];
+            //             }
+                        
+
+            //         } ),
+                    
+            //             renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                           
+            //             }
+            //         )
+            //     }
+
+            // }
+        } );
+
+         
+
+    } );
+
+   
+
+
+    </script>
+
+     
+
+
+</html>
