@@ -41,4 +41,15 @@ openAPI 2.0 documentation is available at /swagger and /redoc
 ## Uninsallation
 Delete the python-cp-gui folder
 
+## TLS
+To run development cerver with TLS
+python3 manage.py runsslserver 0.0.0.0:9020
+
+To generate self signed certificates
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt
+
+To run with certificates
+python3 manage.py runsslserver 0.0.0.0:9020 --certificate tls.crt --key tls.key 
+
+
 
