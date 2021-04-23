@@ -5,11 +5,12 @@ from bos_incidents.datestring import date_to_string, string_to_date
 from datetime import datetime, timezone
 import json
 # import pandas as pd
-from cp_local import Cp, rpc, config
+from cp_local import Cp, rpc, config, normalize, substitution
 import _thread
 import time
 
 leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+# leagueIds = [4380]
 # 4380 : NHL # Ice Hockey
 # 4424 : MLB # Baseball
 # 4328 : EPL
@@ -43,6 +44,8 @@ apiTeamsFromLeagueId = "lookup_all_teams.php?id="
 
 apiAllLeagues = "all_leagues.php"
 
+apiEventFromId = "lookupevent.php?id="
+
 
 class Feed:
 
@@ -52,6 +55,12 @@ class Feed:
         self.constCheckPeriod = 60 * 60 * 24  # in seconds
         self.maxOpenProposals = 1
         pass
+
+    def EventFromId(self, eventId):
+        url = apiBase + apiEventFromId + str(eventId)
+        event = requests.get(url).text
+        event = json.loads(event)
+        return event
 
     def Past15(self, leagueid):
         url = apiBase + apiEventsPastLeague + str(leagueid)
@@ -84,36 +93,40 @@ class Feed:
         if (event["strPostponed"] == "yes") or (
                 event["strStatus"] == "POST"):
             incident["call"] = INCIDENT_CALLS[4]
-            print("Postponed Event")
+            # print("Postponed Event")
 
         elif (
                 event["strStatus"] == "FT") or (
-                event["strStatus"] == "Match Finished") or (
-                event["strStatus"] == "AP") or (
-                event["strStatus"] == "AOT") or (
-                    (now - startTime).days > 1):
+                    event["strStatus"] == "Match Finished") or (
+                        event["strStatus"] == "AP") or (
+                            event["strStatus"] == "AOT") or (
+                                (now - startTime).days > 1):
             incident["call"] = INCIDENT_CALLS[3]
             incident["arguments"] = dict()
             incident["arguments"]["home_score"] = event["intHomeScore"]
             incident["arguments"]["away_score"] = event["intAwayScore"]
-            print("Match Finished")
+            # print("Match Finished")
 
         elif (
                 event["strStatus"] == "Not Started") or (
                 event["strStatus"] == "NS"):
             incident["call"] = INCIDENT_CALLS[0]
-            print("Not started or NS")
+            # print("Not started or NS")
 
         elif (
                 startTime - now).days >= 1 and isinstance(
                         event["strStatus"], type(None)):
             incident["call"] = INCIDENT_CALLS[0]
-            print("None elif case and event created")
+            # print("None elif case and event created")
 
-        elif (event["strStatus"] == "Second Half"):
+        elif (event["strStatus"] == "Second Half") or (
+                event["strStatus"] == "Q3"):
             incident["call"] = INCIDENT_CALLS[1]
-            print('Second Half', "to in_progress", event["strFilename"])
+            # print('Second Half', "to in_progress", event["strFilename"])
 
+        elif isinstance(event["strStatus"], type(None)):
+            print("Event strStatus None, discarded, call not decided")
+            return incident
         else:
             self.failedEvents.append(event)
             print("Call Not Managed:")
@@ -182,13 +195,16 @@ class Feed:
                     time.sleep(60)
             event = events[k]
             toCp = self.ToCp(event)
-            try:
-                self.cp.Push2bosAll(toCp)
-            except Exception as e:
-                # self.failedEvents.append(toCp)
-                self.failedEvents.append(event)
-                print("Failed Event: ", k, toCp)
-                print(e)
+            if "call" in toCp.keys():
+                try:
+                    self.cp.Push2bosAll(toCp)
+                except Exception as e:
+                    # self.failedEvents.append(toCp)
+                    self.failedEvents.append(event)
+                    print("Failed Event: ", k, toCp)
+                    print(e)
+            else:
+                print("Call not decided")
         return
 
     def PushLeague(self, leagueid, call="create"):
@@ -226,6 +242,42 @@ class Feed:
     def Timed(self):
         self.flagWhileForThread = "run"
         _thread.start_new_thread(self.WhileForThread, ())
+
+    def EventsToDf(self, events):
+        pass
+
+    def MatchingEvent(self, eventsFromFeed, eventFromChain):
+        for eventFromFeed in eventsFromFeed:
+            toCp = self.ToCp(eventFromFeed)
+            toCp = normalize(toCp)
+            if toCp["id"]["start_time"][:-1] == eventFromChain["start_time"]:
+                eventScheme = self.cp.EventScheme(toCp["id"]["sport"], toCp[
+                    "id"]["event_group_name"])
+                home = toCp["id"]["home"]
+                away = toCp["id"]["away"]
+                homeAway = substitution([home, away], eventScheme)
+                if homeAway == eventFromChain["name"][0][1]:
+                    return toCp
+        return None
+
+    def MatchingEvents(self, leagueIds):
+        eventsFromFeed = []
+        for leagueId in leagueIds:
+            # print(leagueId)
+            eventsFromFeed = eventsFromFeed + self.Past15(leagueId)
+        eventsFromChain = self.cp.EventsAllSortedForApi()
+        matchingEvents = []
+        for k in range(len(eventsFromChain)):
+            # eventFromChain = eventsFromChain.iloc[k]
+            eventFromChain = eventsFromChain[k]
+            # for eventFromChain in eventsFromChain:
+            toCp = self.MatchingEvent(eventsFromFeed, eventFromChain)
+            # if not isinstance(toCp, type(None)):
+            matchingEvent = dict()
+            matchingEvent["eventFromChain"] = eventFromChain
+            matchingEvent["eventFromFeed"] = toCp
+            matchingEvents.append(matchingEvent)
+        return matchingEvents
 
 
 class Updater:
@@ -269,6 +321,12 @@ class Updater:
     def UpdateInThread(self):
         self.flagWhileForThread = "run"
         _thread.start_new_thread(self.WhileForUpdate, ())
+
+
+class Compare:
+
+    def __init__(self):
+        pass
 
 
 class FeedDetails:

@@ -1,3 +1,4 @@
+import telegram
 import yaml
 from dateutil.parser import parse
 import requests
@@ -43,6 +44,9 @@ apiEventsPastLeague = "eventspastleague.php?id="
 apiTeamsFromLeagueId = "lookup_all_teams.php?id="
 
 apiAllLeagues = "all_leagues.php"
+
+tokenTelegram = config["token_telegram"]
+telegramChatIds = config["telegram_chat_ids"]
 
 
 class Feed:
@@ -278,6 +282,7 @@ class Updater:
         self.delayMax = 3600
         self.delay = 60
         self.flagWhileForThread = "stop"
+        self.telegramBot = telegram.Bot(token=tokenTelegram)
         pass
 
     def Update(self):
@@ -292,8 +297,13 @@ class Updater:
             nowInUtc = datetime.now(startTime.tzinfo)
             if startTime <= nowInUtc:
                 if event["status"] == "upcoming":
+                    for chatId in telegramChatIds:
+                        text = "Update " + str(event) + " to in_progress!"
+                        self.bot.sendMessage(chat_id=chatId, text=text)
+
                     self.cp.UpdateForApi(
                         event, "in_progress")
+
             else:
                 time2nextEvent = startTime - nowInUtc
                 time2nextEvent = time2nextEvent.total_seconds()
