@@ -1,8 +1,9 @@
+telegram
 bookiesports
 bos-mint
 bos-incidents
 
-aiohttp==3.7.3
+aiohttp==3.7.4
 appdirs==1.4.4
 asgiref==3.3.1
 async-timeout==3.0.1
@@ -19,7 +20,7 @@ click-datetime==0.2
 colorlog==4.6.2
 dateutils==0.6.12
 decorator==4.4.2
-Django==3.1.4
+Django==3.1.6
 djangorestframework==3.12.2
 dnspython==2.0.0
 ecdsa==0.13.3
@@ -41,7 +42,7 @@ ipython
 ipython-genutils==0.2.0
 itsdangerous==1.1.0
 jedi==0.17.2
-Jinja2==2.11.2
+Jinja2==2.11.3
 jsonschema==3.2.0
 Markdown==3.3.3
 MarkupSafe==1.1.1
@@ -57,13 +58,13 @@ prettytable==2.0.0
 prompt-toolkit==3.0.8
 ptyprocess==0.6.0
 pycryptodome==3.9.9
-Pygments==2.7.3
+Pygments==2.7.4
 pylibscrypt==1.8.0
 pymongo==3.11.2
 pyrsistent==0.17.3
 python-dateutil==2.8.1
 pytz==2020.4
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.22.0
 scrypt==0.8.17
 six==1.15.0

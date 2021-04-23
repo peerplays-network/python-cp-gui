@@ -46,6 +46,8 @@ INCIDENT_CALLS = [
     "dynamic_bmgs",
 ]
 
+STATUSES = ["upcoming", "in_progress", "finished"]
+
 # normalizer = IncidentsNormalizer(chain="elizabeth")
 normalizer = IncidentsNormalizer(chain=chainName)
 normalize = normalizer.normalize
@@ -101,7 +103,7 @@ class Cp():
 
     def GetParticipants(self, sport, participantKey):
         participants = self.bookiesports[sport]["participants"][
-                participantKey]["participants"]
+            participantKey]["participants"]
         particpantIdentifiers = []
         participantDisplays = []
         for participant in participants:
@@ -121,9 +123,9 @@ class Cp():
 #        self._eventGroupIdentifier = self.bookiesports[sport][
 #                "eventgroups"][eventGroup]["identifier"]
         self._participantKey = self.bookiesports[sport]["eventgroups"][
-                eventGroup]["participants"]
+            eventGroup]["participants"]
         self._participants, participantDisplays = self.GetParticipants(
-                sport, self._participantKey)
+            sport, self._participantKey)
         return self._participants
 
     def CreateForApi(self, sport, eventGroup, home, away, startTime):
@@ -133,7 +135,7 @@ class Cp():
         incident["id"] = dict()
         incident["id"]["sport"] = sport
         eventGroupIdentifier = self.bookiesports[sport][
-                "eventgroups"][eventGroup]["identifier"]
+            "eventgroups"][eventGroup]["identifier"]
         incident["id"]["event_group_name"] = eventGroupIdentifier
         # incident["id"]["event_group_name"] = self._eventGroup
         startTime = date_to_string(startTime)
@@ -158,7 +160,7 @@ class Cp():
         incident["id"] = dict()
         incident["id"]["sport"] = sport
         eventGroupIdentifier = self.bookiesports[sport][
-                "eventgroups"][eventGroup]["identifier"]
+            "eventgroups"][eventGroup]["identifier"]
         incident["id"]["event_group_name"] = eventGroupIdentifier
         # incident["id"]["event_group_name"] = self._eventGroup
         startTime = date_to_string(startTime)
@@ -249,14 +251,22 @@ class Cp():
         eventsAllList = []
         for k in range(len(eventsAll)):
             eventsAllList.append(dict(eventsAll.iloc[k]))
+        eventsAllList = self.EventsAllWithEventGroupName(eventsAllList)
         return eventsAllList
 
     def EventsAllWithEventGroupName(self, eventsAll):
-        # resEvents = []
         for event in eventsAll:
             event_group_id = event["event_group_id"]
-            event["event_group_name"] = rpc.get_object(
-                    event_group_id)["name"][1][1]
+            # event["event_group_name"] = rpc.get_object(
+                    # event_group_id)["name"][1][1]
+            eventGroup = rpc.get_object(event_group_id)
+
+            event["event_group_name"] = dict(eventGroup["name"])["identifier"]
+            # event["event_group_name"] = eventGroup["name"][1][1] 
+            sport = rpc.get_object(eventGroup["sport_id"])
+            sport = dict(sport["name"])["identifier"]
+            event["sport"] = sport
+            # sport = normalizer._get_sport_identifier(sport, True)
         return eventsAll
 
     def Event2Update(self):

@@ -1,3 +1,4 @@
+import telegram
 import yaml
 from dateutil.parser import parse
 import requests
@@ -9,8 +10,8 @@ from cp_local import Cp, rpc, config, normalize, substitution
 import _thread
 import time
 
-leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
-# leagueIds = [4380]
+# leagueIds = [4328, 4391, 4387, 4380, 4424, 4335, 4332, 4331]
+leagueIds = [4328, 4391, 4387, 4380, 4335, 4332, 4331]
 # 4380 : NHL # Ice Hockey
 # 4424 : MLB # Baseball
 # 4328 : EPL
@@ -44,7 +45,8 @@ apiTeamsFromLeagueId = "lookup_all_teams.php?id="
 
 apiAllLeagues = "all_leagues.php"
 
-apiEventFromId = "lookupevent.php?id="
+tokenTelegram = config["token_telegram"]
+telegramChatIds = config["telegram_chat_ids"]
 
 
 class Feed:
@@ -55,12 +57,6 @@ class Feed:
         self.constCheckPeriod = 60 * 60 * 24  # in seconds
         self.maxOpenProposals = 1
         pass
-
-    def EventFromId(self, eventId):
-        url = apiBase + apiEventFromId + str(eventId)
-        event = requests.get(url).text
-        event = json.loads(event)
-        return event
 
     def Past15(self, leagueid):
         url = apiBase + apiEventsPastLeague + str(leagueid)
@@ -119,14 +115,10 @@ class Feed:
             incident["call"] = INCIDENT_CALLS[0]
             # print("None elif case and event created")
 
-        elif (event["strStatus"] == "Second Half") or (
-                event["strStatus"] == "Q3"):
+        elif (event["strStatus"] == "Second Half"):
             incident["call"] = INCIDENT_CALLS[1]
             # print('Second Half', "to in_progress", event["strFilename"])
 
-        elif isinstance(event["strStatus"], type(None)):
-            print("Event strStatus None, discarded, call not decided")
-            return incident
         else:
             self.failedEvents.append(event)
             print("Call Not Managed:")
@@ -149,6 +141,7 @@ class Feed:
         # if len(strTime.split(":")[0]) == 1:
         #     strTime = "0" + strTime
         startTime = dateEvent + "T" + strTime + "Z"
+        # print(startTime, type(startTime))
         startTime = date_to_string(parse(startTime))
         incident = self.CreateIncident(
                 sport, eventGroup, home, away, startTime)
@@ -195,16 +188,13 @@ class Feed:
                     time.sleep(60)
             event = events[k]
             toCp = self.ToCp(event)
-            if "call" in toCp.keys():
-                try:
-                    self.cp.Push2bosAll(toCp)
-                except Exception as e:
-                    # self.failedEvents.append(toCp)
-                    self.failedEvents.append(event)
-                    print("Failed Event: ", k, toCp)
-                    print(e)
-            else:
-                print("Call not decided")
+            try:
+                self.cp.Push2bosAll(toCp)
+            except Exception as e:
+                # self.failedEvents.append(toCp)
+                self.failedEvents.append(event)
+                print("Failed Event: ", k, toCp)
+                print(e)
         return
 
     def PushLeague(self, leagueid, call="create"):
@@ -248,6 +238,7 @@ class Feed:
 
     def MatchingEvent(self, eventsFromFeed, eventFromChain):
         for eventFromFeed in eventsFromFeed:
+            self._eventFromFeed = eventFromFeed
             toCp = self.ToCp(eventFromFeed)
             toCp = normalize(toCp)
             if toCp["id"]["start_time"][:-1] == eventFromChain["start_time"]:
@@ -279,6 +270,10 @@ class Feed:
             matchingEvents.append(matchingEvent)
         return matchingEvents
 
+    def MatchingEventsAll(self):
+        matchingEventsAll = self.MatchingEvents(leagueIds)
+        return matchingEventsAll
+
 
 class Updater:
 
@@ -287,6 +282,7 @@ class Updater:
         self.delayMax = 3600
         self.delay = 60
         self.flagWhileForThread = "stop"
+        self.telegramBot = telegram.Bot(token=tokenTelegram)
         pass
 
     def Update(self):
@@ -301,8 +297,13 @@ class Updater:
             nowInUtc = datetime.now(startTime.tzinfo)
             if startTime <= nowInUtc:
                 if event["status"] == "upcoming":
+                    for chatId in telegramChatIds:
+                        text = "Update " + str(event) + " to in_progress!"
+                        self.bot.sendMessage(chat_id=chatId, text=text)
+
                     self.cp.UpdateForApi(
                         event, "in_progress")
+
             else:
                 time2nextEvent = startTime - nowInUtc
                 time2nextEvent = time2nextEvent.total_seconds()
