@@ -13,6 +13,13 @@ def GetMatchingEvents():
     listDist = fd.MatchingEventsAll()
     return listDist   
 
+def GetOpenProposalsCount():
+    openproposals , maxproposals = cp.OpenProposalsCount()
+    return [openproposals ,maxproposals ]
+
+def GetHistory(providername):
+    return cp.History(providername)
+
 def GetEvents(params={}):
     rDict = dict()
     sport = None

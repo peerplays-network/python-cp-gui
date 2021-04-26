@@ -34,7 +34,8 @@
     <div class="container" style="margin-top: 30px;align-items: center;">
 		
 		<h4 id=local_date_time></h4>
-
+    
+    <h4 >Number of Open Proposals: {{ proposals.0 }} / {{ proposals.1 }} </h4>
       
       <div class="form-group" id=create_one >
 
@@ -179,10 +180,10 @@
         groups = $('.groups').find("option:selected").text()
         home =  $('.home').find("option:selected").text()
         away =  $('.away').find("option:selected").text()
-        console.log(sport)
-        console.log(groups)
-        console.log(home)
-        console.log(away)
+        // console.log(sport)
+        // console.log(groups)
+        // console.log(home)
+        // console.log(away)
          
 
         
@@ -197,12 +198,12 @@
         },
         function(data, status){
 
-            console.log(data)
+            // console.log(data)
             var obj = data.list
             $('#'+new_next_select_id).html('<option>Select One</option>')
             if (data.list[1] != 'status'){
               Object.keys(obj).forEach(function(key) {
-                  console.log(key, obj[key]);
+                  // console.log(key, obj[key]);
                   
                   $('#'+new_next_select_id).append("<option value="+ key +">"+obj[key] + "</option>")
               });
@@ -234,8 +235,14 @@
               csrfmiddlewaretoken: '{{ csrf_token }}' ,
             },
             function(data, status){
-              alert(data.success)
-              window.location.href =  '/'
+              if (data.success == 'Posted'){
+                alert(data.message)
+              }
+              
+              // console.log(data.message)
+              // console.log(data.message.id)
+              
+              // window.location.href =  '/'
             });
         }
 

@@ -11,7 +11,7 @@ from home.forms import SignUpForm ,LoginForm
 from django.contrib.auth.models import User
 from home.models import ApplicationFeatures 
 from django.contrib.auth import logout
-from game.views import GetEvents  , CreatePotato , UpdatePotato , GetMatchingEvents
+from game.views import GetEvents  , CreatePotato , UpdatePotato , GetMatchingEvents , GetOpenProposalsCount, GetHistory
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from home.utilities import index_page_permitted , register_login_page_permitted , allow_login , allow_register
@@ -100,10 +100,11 @@ def UpdateList(request):
         if index_page_permitted(request):
             params = {'filter':'events'}
             events = GetEvents(params)
+            proposal_value = GetOpenProposalsCount()
             list_values = {}
             if events is not None:
                 list_values = dict(enumerate(events , start=1))
-            return render(request, 'update_cp.html',{"data": list_values})
+            return render(request, 'update_cp.html',{"data": list_values,'proposals' : proposal_value})
         else:
             return render(request, 'login.html')
     except:
@@ -125,10 +126,11 @@ def UpdateListForDebug(request):
             params = {'filter':'events'}
             # events = getstaticEvents()
             events = GetMatchingEvents()
+            proposal_value = GetOpenProposalsCount()
             list_values = {}
             if events is not None:
                 list_values = dict(enumerate(events , start=1))
-            return render(request, 'update_debug.html',{"data": list_values})
+            return render(request, 'update_debug.html',{"data": list_values,'proposals' : proposal_value})
         else:
             return render(request, 'login.html')
     except:
@@ -145,15 +147,39 @@ def UpdateListSimple(request):
         if index_page_permitted(request):
             params = {'filter':'events'}
             # events = getstaticEvents()
+            proposal_value = GetOpenProposalsCount()
             events = GetMatchingEvents()
             list_values = {}
             if events is not None:
                 list_values = dict(enumerate(events , start=1))
-            return render(request, 'update_simple.html',{"data": list_values})
+            return render(request, 'update_simple.html',{"data": list_values,'proposals' : proposal_value})
         else:
             return render(request, 'login.html')
     except:
         return render(request, '404.html')
+
+
+
+def History(request):
+    '''
+    param : request
+    description : To load update page
+    '''
+    # try:
+    if index_page_permitted(request):
+        print(request.user.username)
+        # events = getstaticEvents()
+        events = GetHistory(request.user.username)
+        # print(events)
+        proposal_value = GetOpenProposalsCount()
+        list_values = {}
+        if events is not None:
+            list_values = dict(enumerate(events , start=1))
+        return render(request, 'history.html',{"data": list_values,'proposals' : proposal_value})
+    else:
+        return render(request, 'login.html')
+    # except:
+    #     return render(request, '404.html')
 
 
 def Home(request):
@@ -182,6 +208,8 @@ def CreateList(request,num=1):
         start_val = 1
         heading = ''
         is_last = False
+        proposal_value = GetOpenProposalsCount()
+        # print("Proposal value " ,proposal_value)
         if num == 1:
             games = GetEvents()
             list_values = dict(enumerate(games , start=start_val))
@@ -204,7 +232,7 @@ def CreateList(request,num=1):
         if num == 5:
             heading = "Time"
             is_last = True
-        return render(request, 'create.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num})
+        return render(request, 'create.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num,'proposals' : proposal_value})
 
     elif register_login_page_permitted():
             return render(request, 'login.html')
@@ -231,9 +259,12 @@ def LoadSelectOptions(request):
         is_last = False
         if num == 1:
             games = GetEvents()
+            proposal_value = GetOpenProposalsCount()
+            print("Proposal value " ,proposal_value)
             list_values = dict(enumerate(games , start=start_val))
             heading = "Select Games"
-            return render(request, 'create_cp.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num})
+            return render(request, 'create_cp.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num , 'proposals' : proposal_value})
+            # return render(request, 'create_cp.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num })
         if num  == 2:
             request.session['sport'] = request.POST.get("sport").strip()
 
@@ -295,9 +326,8 @@ def CreatePost(request):
                 "username":username}
         print("Data " , data)
         result = CreatePotato(data) 
-        result
         if(len(result) > 0 and 'error' not in result):
-            return JsonResponse({'success':'Posted'})
+            return JsonResponse({'success':'Posted' , 'message':json.dumps(result)})
         else:
             JsonResponse({'success':'Error','message':result['error']})
     return JsonResponse({'success':True,'message':'success'})

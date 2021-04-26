@@ -1,3 +1,5 @@
+from bos_incidents import factory, exceptions
+
 import _thread
 import time
 import numpy as np
@@ -52,6 +54,9 @@ STATUSES = ["upcoming", "in_progress", "finished"]
 normalizer = IncidentsNormalizer(chain=chainName)
 normalize = normalizer.normalize
 
+# Incident Storage
+storage = factory.get_incident_storage()
+
 
 def substitution(teams, scheme):
     class Teams:
@@ -68,6 +73,7 @@ def substitution(teams, scheme):
 class Cp():
 
     def __init__(self):
+        self.maxOpenProposals = 2
         self.delayBetweenBosPushes = 1  # in seconds
         self.bookiesports = BookieSports(chainName)
         pass
@@ -186,13 +192,13 @@ class Cp():
         print("Select Event Group")
         self._eventGroup = self.GetKey(self._eventGroupsList)
         self._eventGroupIdentifier = self.bookiesports[self._sport][
-                "eventgroups"][self._eventGroup]["identifier"]
+            "eventgroups"][self._eventGroup]["identifier"]
         # self._eventGroupIdentifier = self.bookiesports[self._sport][
         # "eventgroups"][self._eventGroup]["aliases"][0]
         self._participantKey = self.bookiesports[self._sport]["eventgroups"][
                 self._eventGroup]["participants"]
         self._participants, participantDisplays = self.GetParticipants(
-                self._sport, self._participantKey)
+            self._sport, self._participantKey)
         print("")
         print("Select Home Team")
         self._home = self.GetKeyParticipant(
@@ -258,11 +264,11 @@ class Cp():
         for event in eventsAll:
             event_group_id = event["event_group_id"]
             # event["event_group_name"] = rpc.get_object(
-                    # event_group_id)["name"][1][1]
+            # event_group_id)["name"][1][1]
             eventGroup = rpc.get_object(event_group_id)
 
             event["event_group_name"] = dict(eventGroup["name"])["identifier"]
-            # event["event_group_name"] = eventGroup["name"][1][1] 
+            # event["event_group_name"] = eventGroup["name"][1][1]
             sport = rpc.get_object(eventGroup["sport_id"])
             sport = dict(sport["name"])["identifier"]
             event["sport"] = sport
@@ -666,6 +672,15 @@ class Cp():
         self._incident = incident
         logger.info(str(incident))
 
+        while True:
+            proposalsOpen = rpc.get_proposed_transactions("1.2.1")
+            print("Len proposalsOpen: ",
+                  len(proposalsOpen), " / ", self.maxOpenProposals)
+            if len(proposalsOpen) <= self.maxOpenProposals:
+                break
+            else:
+                time.sleep(60)
+
         # r = requests.post(url=bos["local"], json=incident)
         rng = np.random.default_rng()
         lBosApis = len(bosApis)
@@ -682,8 +697,32 @@ class Cp():
                 print(e)
                 logger.warning(api + ": failed")
             time.sleep(self.delayBetweenBosPushes)
+        try:
+            # FIXME, remove copy()
+            storage.insert_incident(incident.copy())
+        except exceptions.DuplicateIncidentException as e:
+            print(e)
+            # We merely pass here since we have the incident already
+            # alerting anyone won't do anything
+            # traceback.print_exc()
+            pass
+
         print("thread finished")
         return
+
+    def OpenProposalsCount(self):
+        openProposalsCount = len(rpc.get_proposed_transactions("1.2.1"))
+        return openProposalsCount, self.maxOpenProposals
+
+    def History(self, providerName):
+        collection = storage._get_collection(collection_name="incident")
+        historyGen = collection.find({"provider_info.name": {
+            "$eq": providerName}})
+
+        history = []
+        for doc in historyGen:
+            history.append(doc)
+        return history
 
     def Push2bosBetter(self, incident, providerNames):
         string = incident_to_string(incident)

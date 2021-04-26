@@ -16,6 +16,7 @@ urlpatterns = [
     path('u/', views.UpdateList, name='update_new'),
     path('udebug/', views.UpdateListForDebug, name='udebug'),
     path('usimple/', views.UpdateListSimple, name='udebug'),
+    path('history/', views.History, name='history'),
     path('settingspanel/', views.admin, name='admin'),
     path('save_features', views.SaveApplicationFeatures, name='savefeatures'),
     path('delete_user', views.DeleteUser, name='delete_user'),
