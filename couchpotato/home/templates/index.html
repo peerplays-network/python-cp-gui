@@ -12,6 +12,17 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<style>
+.btn{
+  height: 100px;
+    vertical-align: baseline;
+    font-size: 25px;
+    font-weight: 900;
+    padding: 32px;
+}
+
+}
+</style>
 
   </head>
   <body>
@@ -29,11 +40,30 @@
         <!-- <button type="button" class="btn btn-primary btn-lg btn-block">CREATE</button>
         <button type="button" class="btn btn-secondary btn-lg btn-block">UPDATE</button> -->
 
-        <nav class="nav nav-pills nav-justified">
-            <a class="btn btn-primary btn-lg btn-block" href="/select">CREATE</a>
-            <a class="btn btn-secondary btn-lg btn-block" href="/usimple">UPDATE</a>
-            <a class="btn btn-info btn-lg btn-block" href="/history">HISTORY</a>
-        </nav>
+        <!-- <nav class="nav nav-pills nav-justified"> -->
+          <div class=row>
+            <div class=col-md-12 style="padding-bottom: 10px;">
+              <div class=col-md-6>
+                <a class="btn btn-primary btn-lg btn-block" href="/select">CREATE</a>
+              </div>
+              <div class=col-md-6>
+                <a class="btn btn-secondary btn-lg btn-block" href="/usimple">UPDATE</a>
+              </div>
+            </div>
+             
+              <div class=col-md-12 >
+                <div class=col-md-6>
+                  <a class="btn btn-info btn-lg btn-block" href="/history">HISTORY</a>
+                </div>
+                <div class=col-md-6>
+                  <a class="btn  btn-warning btn-lg btn-block"  href="/calendar">CALENDAR</a>
+                </div>
+              </div>
+            </div>
+           
+          </div>
+            
+        <!-- </nav> -->
     
       </div>
     

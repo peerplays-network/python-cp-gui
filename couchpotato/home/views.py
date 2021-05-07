@@ -116,6 +116,16 @@ def getstaticEvents():
     return newDict
   
 
+def GetEventsForCalender(request):
+    # events = getstaticEvents()
+    events = GetMatchingEvents()
+    events_to_display = []
+    for e in events:
+        events_to_display.append({'title':e['eventFromChain']['name'][0][1],'start':e['eventFromChain']['start_time'],'description':json.dumps(e['eventFromChain'])})
+    
+    # print(events_to_display)
+    return JsonResponse(events_to_display , safe = False)
+ 
 def UpdateListForDebug(request):
     '''
     param : request
