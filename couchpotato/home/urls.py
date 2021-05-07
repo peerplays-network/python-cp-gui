@@ -1,5 +1,6 @@
 
 from django.urls import path ,re_path
+from django.conf.urls import url, include
 
 from . import views
 from django.conf import settings
@@ -13,6 +14,7 @@ urlpatterns = [
     path('', views.Home, name='index'),
     path('create/<int:num>', views.CreateList, name='create'),
     path('select/', views.LoadSelectOptions, name='createselect'),
+    url(r'^events/$', views.GetEventsForCalender, name='events'),
     path('u/', views.UpdateList, name='update_new'),
     path('udebug/', views.UpdateListForDebug, name='udebug'),
     path('usimple/', views.UpdateListSimple, name='udebug'),

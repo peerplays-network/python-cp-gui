@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'home',
     'game',
+    'calender',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'sslserver',
+     
      #'rest_framework_swagger',
 ]
 
