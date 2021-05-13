@@ -4,9 +4,17 @@ The project is a web based implementation of couch potato.
 
 ## Requirements
 - Python 3
-- Git
 - Virtualenv
+- GCC
+- Git
 - MongoDB
+- SQLite
+
+### Ubuntu 18+
+```bash
+sudo apt-get update
+sudo apt-get install python3 python3-venv python3-dev build-essential git mongodb libmysqlclient-dev -y
+```
 
 ## Installation
 
@@ -17,7 +25,7 @@ source env/bin/activate
 pip3 install -r requirements.txt
 # Configure config-bos-mint.yaml
 cd couchpotato
-cp example-config-bos-mint.yaml config-bos-mint-yaml
+cp example-config-bos-mint.yaml config-bos-mint.yaml
 ```
 
 ### First Run
@@ -34,6 +42,7 @@ This operation will clear all the existing users
 ## Usage
 
 ```bash
+cd python-cp-gui
 source env/bin/activate
 cd couchpotato
 python3 manage.py runserver 0.0.0.0:9010
