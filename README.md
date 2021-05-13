@@ -2,22 +2,28 @@
 
 The project is a web based implementation of couch potato.
 
+## Requirements
+- Python 3
+- Git
+- Virtualenv
+- MongoDB
+
 ## Installation
 
-```bash 
+```bash
 cd python-cp-gui
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+# Configure config-bos-mint.yaml
+cd couchpotato
+cp example-config-bos-mint.yaml config-bos-mint-yaml
 ```
-
-
 
 ### First Run
 
-Modify config-bos-mint.yaml
-
 ```bash
+cd python-cp-gui
 source env/bin/activate
 cd couchpotato/scripts/
 ./install.sh
@@ -26,6 +32,7 @@ cd couchpotato/scripts/
 This operation will clear all the existing users
 
 ## Usage
+
 ```bash
 source env/bin/activate
 cd couchpotato
