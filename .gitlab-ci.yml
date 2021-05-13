@@ -13,6 +13,7 @@ gemnasium-python-dependency_scanning:
 
 stages:
   - test
+  - deploy
 
 test:
   stage: test
@@ -20,3 +21,12 @@ test:
     - apt-get update -qy
     - apt-get install -y python3-dev python3-pip build-essential sqlite3
     - pip3 install -r requirements.txt
+
+deployToDev:
+  stage: deploy
+  script:
+    - deployToDev
+  tags:
+    - cp1
+  only:
+    - develop
