@@ -1,5 +1,4 @@
 python-telegram-bot
-pymongo
 django-sslserver
 bookiesports
 bos-mint
