@@ -7,16 +7,11 @@ from django.conf import settings
 
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from home.tests import Test
 from django.views.static import serve 
 
 urlpatterns = [
     path('', views.Home, name='index'),
-    path('create/<int:num>', views.CreateList, name='create'),
     path('select/', views.LoadSelectOptions, name='createselect'),
-    url(r'^events/$', views.GetEventsForCalender, name='events'),
-    path('u/', views.UpdateList, name='update_new'),
-    path('udebug/', views.UpdateListForDebug, name='udebug'),
     path('usimple/', views.UpdateListSimple, name='udebug'),
     path('history/', views.History, name='history'),
     path('settingspanel/', views.admin, name='admin'),
@@ -29,9 +24,7 @@ urlpatterns = [
     path('post_create', views.CreatePost, name='post_create'),
     path('post_update', views.UpdatePost, name='post_update'),
     path('accounts/logout/', views.LogoutSwagger, name='swagger_logout') ,
-    
-
-    # path('t/', Test, name='test'), 
+    url(r'^events/$', views.GetEventsForCalender, name='events'),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 
     
      

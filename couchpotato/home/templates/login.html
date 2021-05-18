@@ -18,12 +18,7 @@
 		<link rel="stylesheet" href="{% static 'assets/css/form-elements.css' %}">
         <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+         
 
         <!-- Favicon and touch icons -->
         <link rel="shortcut icon" href="{% static 'assets/ico/favicon.png' %}">
@@ -52,8 +47,7 @@
                     </div>
                     
                     <div class="row">
-						<!-- <div class="col-sm-3"></div> -->
-                        <div class="col-sm-5 col-sm-offset-3">
+                         <div class="col-sm-5 col-sm-offset-3">
                         	
                         	<div class="form-box">
 	                        	 
@@ -70,9 +64,7 @@
 				                        	<input type="password" name="password" placeholder="Password..." class="form-password form-control" id="form-password">
                                         </div>
                                         
-                                        {% if messages %}
-                                        <!-- {{messages}} -->
-                                            <!-- <ul class="messages" style="color:red"> -->
+                                        {% if messages %} 
                                                 <font style="color:red">
                                                     {% for message in messages %}
                                                         {{message}}
@@ -80,8 +72,7 @@
                                                     {% endfor %}
                                                 </font>
                                                 
-                                            <!-- </ul> -->
-                                        {% endif %}
+                                         {% endif %}
 
                                         
 
@@ -97,20 +88,7 @@
 			                    </div>
 		                    </div>
 		                
-		                	<!-- <div class="social-login">
-	                        	<h3>...or login with:</h3>
-	                        	<div class="social-login-buttons">
-		                        	<a class="btn btn-link-1 btn-link-1-facebook" href="#">
-		                        		<i class="fa fa-facebook"></i> Facebook
-		                        	</a>
-		                        	<a class="btn btn-link-1 btn-link-1-twitter" href="#">
-		                        		<i class="fa fa-twitter"></i> Twitter
-		                        	</a>
-		                        	<a class="btn btn-link-1 btn-link-1-google-plus" href="#">
-		                        		<i class="fa fa-google-plus"></i> Google Plus
-		                        	</a>
-	                        	</div>
-	                        </div> -->
+		                	 
 	                        
                         </div>
                         
@@ -122,29 +100,14 @@
             
         </div>
 
-        <!-- Footer -->
-        <!-- <footer>
-        	<div class="container">
-        		<div class="row">
-        			
-        			<div class="col-sm-8 col-sm-offset-2">
-        				<div class="footer-border"></div>
-        				<p>Made by Anli Zaimi at <a href="http://azmind.com" target="_blank"><strong>AZMIND</strong></a> 
-        					having a lot of fun. <i class="fa fa-smile-o"></i></p>
-        			</div>
-        			
-        		</div>
-        	</div>
-        </footer> -->
+         
 
         <!-- Javascript -->
         <script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
         <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
         <script src="{% static 'assets/js/scripts.js' %}"></script>
         
-        <!--[if lt IE 10]>
-            <script src="assets/js/placeholder.js"></script>
-        <![endif]-->
+        
 
     </body>
 

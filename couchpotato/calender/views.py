@@ -5,9 +5,10 @@ from home.utilities import index_page_permitted
 
 
 def index(request):
-      
-    # render function takes argument  - request
-    # and return HTML as response
+    '''
+    Decription: Render function to display calender
+    '''
+     
     try:
         if index_page_permitted(request):
             return render(request, "calender.html")

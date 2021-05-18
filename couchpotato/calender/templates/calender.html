@@ -68,12 +68,7 @@
         },
         eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' },
 
-        // dateClick: function(arg) {
-        //   console.log('dateClick', calendar.formatIso(arg.date));
-        // },
-        // select: function(arg) {
-        //   console.log('select', calendar.formatIso(arg.start), calendar.formatIso(arg.end));
-        // },
+        
         eventDidMount: function(info) {
         var tooltip = new Tooltip(info.el, {
           title: info.event.extendedProps.description,

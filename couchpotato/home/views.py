@@ -28,7 +28,6 @@ def AuthenticateUser(request):
     if request.method == 'POST':
         form = LoginForm(request=request, data=request.POST)
 
-        
         if form.is_valid():
             username = form.cleaned_data.get('username').strip()
             password = form.cleaned_data.get('password')
@@ -36,7 +35,7 @@ def AuthenticateUser(request):
             if user is not None:
                 login(request, user)
                 return redirect('/')
-            
+
         else:
             print("Invalid")
             for key , value in form.errors.items():
@@ -71,8 +70,7 @@ def SignUp(request):
     description :  Loads the registration page and does the sign up. 
     New user is set inactive intially before admin approval. 
     '''
-    # print("In sign up ")
-    # try:
+     
     if allow_register():
         if request.method == 'POST':   
             form = SignUpForm(request.POST)
@@ -87,8 +85,6 @@ def SignUp(request):
     else:
         return render(request, '403.html') 
 
-    # except:
-    #     return render(request, '404.html')
 
  
 def UpdateList(request):
@@ -117,34 +113,17 @@ def getstaticEvents():
   
 
 def GetEventsForCalender(request):
-    # events = getstaticEvents()
+    '''
+    param : request
+    description : To load events in a calender
+    '''
     events = GetMatchingEvents()
     events_to_display = []
     for e in events:
         events_to_display.append({'title':e['eventFromChain']['name'][0][1],'start':e['eventFromChain']['start_time'],'description':json.dumps(e['eventFromChain'])})
     
-    # print(events_to_display)
     return JsonResponse(events_to_display , safe = False)
  
-def UpdateListForDebug(request):
-    '''
-    param : request
-    description : To load update page
-    '''
-    try:
-        if index_page_permitted(request):
-            params = {'filter':'events'}
-            # events = getstaticEvents()
-            events = GetMatchingEvents()
-            proposal_value = GetOpenProposalsCount()
-            list_values = {}
-            if events is not None:
-                list_values = dict(enumerate(events , start=1))
-            return render(request, 'update_debug.html',{"data": list_values,'proposals' : proposal_value})
-        else:
-            return render(request, 'login.html')
-    except:
-        return render(request, '404.html')
 
 
 
@@ -155,8 +134,6 @@ def UpdateListSimple(request):
     '''
     try:
         if index_page_permitted(request):
-            params = {'filter':'events'}
-            # events = getstaticEvents()
             proposal_value = GetOpenProposalsCount()
             events = GetMatchingEvents()
             list_values = {}
@@ -175,12 +152,10 @@ def History(request):
     param : request
     description : To load update page
     '''
-    # try:
+
     if index_page_permitted(request):
         print(request.user.username)
-        # events = getstaticEvents()
         events = GetHistory(request.user.username)
-        # print(events)
         proposal_value = GetOpenProposalsCount()
         list_values = {}
         if events is not None:
@@ -188,8 +163,6 @@ def History(request):
         return render(request, 'history.html',{"data": list_values,'proposals' : proposal_value})
     else:
         return render(request, 'login.html')
-    # except:
-    #     return render(request, '404.html')
 
 
 def Home(request):
@@ -198,54 +171,11 @@ def Home(request):
     description : To load home page
     '''
 
-    # try:
     if index_page_permitted(request):
         return render(request, 'index.html')
     elif register_login_page_permitted():
         return render(request, 'login.html')
-    # except:
-    #     return render(request, '404.html')
-
-def CreateList(request,num=1):
-    '''
-    param-1 : request
-    param-2 : num , represents which question to load.
-    description : To load list of options during create of a page
-    '''
-    
-    if index_page_permitted(request):
-        list_values = {}
-        start_val = 1
-        heading = ''
-        is_last = False
-        proposal_value = GetOpenProposalsCount()
-        # print("Proposal value " ,proposal_value)
-        if num == 1:
-            games = GetEvents()
-            list_values = dict(enumerate(games , start=start_val))
-            heading = "Select Games"
-        if num  == 2:
-            params = {'sport':request.session['sport'].strip()}
-            sport = GetEvents(params)
-            heading = "Select Event Groups"
-            list_values = dict(enumerate(sport , start=start_val))
-        if num == 3:
-            params = {"sport":request.session['sport'].strip(),"eventGroup":request.session['eventGroup'].strip()}
-            teams = GetEvents(params)
-            heading = "Home"
-            list_values = dict(enumerate(teams , start=start_val))
-        if num == 4:
-            params ={"sport":request.session['sport'].strip(),"eventGroup":request.session['eventGroup'].strip()}
-            teams = GetEvents(params)
-            heading = "Away"
-            list_values = dict(enumerate(teams , start=start_val))
-        if num == 5:
-            heading = "Time"
-            is_last = True
-        return render(request, 'create.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num,'proposals' : proposal_value})
-
-    elif register_login_page_permitted():
-            return render(request, 'login.html')
+     
 
 
 
@@ -258,7 +188,8 @@ def LoadSelectOptions(request):
 
     num = request.POST.get("num")
     if num == None:
-        num = 1  # Fisrt page loading the num is set as 1
+        # Fisrt page loading the num is set as 1
+        num = 1  
     else:
         num = int(num)
      
@@ -274,10 +205,8 @@ def LoadSelectOptions(request):
             list_values = dict(enumerate(games , start=start_val))
             heading = "Select Games"
             return render(request, 'create_cp.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num , 'proposals' : proposal_value})
-            # return render(request, 'create_cp.html', {"list" : list_values , 'heading' : heading , "islast":is_last,'question_id':num })
         if num  == 2:
             request.session['sport'] = request.POST.get("sport").strip()
-
             params = {'sport':request.session['sport']}
             sport = GetEvents(params)
             heading = "Select Event Groups"
@@ -286,7 +215,6 @@ def LoadSelectOptions(request):
         if num == 3:
             request.session['sport'] = request.POST.get("sport").strip()
             request.session['eventGroup'] = request.POST.get('eventGroup').strip()
-
             params = {"sport":request.POST.get("sport").strip(),"eventGroup":request.POST.get('eventGroup').strip()}
             teams = GetEvents(params)
             heading = "Home"
@@ -296,7 +224,6 @@ def LoadSelectOptions(request):
             request.session['sport'] = request.POST.get("sport").strip()
             request.session['eventGroup'] = request.POST.get('eventGroup').strip()
             request.session['home'] = request.POST.get('home').strip()
-
             params ={"sport":request.POST.get("sport").strip(),"eventGroup":request.POST.get('eventGroup').strip()}
             teams = GetEvents(params)
             heading = "Away"
@@ -356,8 +283,6 @@ def UpdatePost(request):
     away_score = request.POST.get("awayScore")
     username = request.user.username
     data = {'event':eval(event),'call':call,'homeScore':home_score,'awayScore':away_score,'username':username}
-    print(data)
-    # result={}
     result = UpdatePotato(data)
     if(len(result) == 0) :
         return JsonResponse({'success':event + " : " + call})
