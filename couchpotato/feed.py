@@ -258,6 +258,8 @@ class Feed:
             eventsFromFeed = eventsFromFeed + self.Past15(leagueId)
         eventsFromChain = self.cp.EventsAllSortedForApi()
         matchingEvents = []
+        if isinstance(eventsFromChain, type(None)):
+            return matchingEvents
         for k in range(len(eventsFromChain)):
             # eventFromChain = eventsFromChain.iloc[k]
             eventFromChain = eventsFromChain[k]
