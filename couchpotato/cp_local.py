@@ -1,5 +1,5 @@
-from bos_incidents import factory, exceptions
 
+from bos_incidents import factory, exceptions
 import _thread
 import time
 import numpy as np
@@ -14,13 +14,11 @@ import requests
 import yaml
 import logging
 
-
 with open("config-bos-mint.yaml", "r") as f:
     config = yaml.safe_load(f)
 chainName = config["connection"]["use"]
 bosApis = config["bosApis"]
 potatoNames = config["potatoNames"]
-
 
 # Create and configure logger
 # logging.basicConfig(filename="za.log",
@@ -37,7 +35,6 @@ node = Node()
 # node.unlock(config["password"])
 ppy = node.get_node()
 rpc = ppy.rpc
-
 
 INCIDENT_CALLS = [
     "create",
@@ -689,10 +686,15 @@ class Cp():
         for k in ks:
             # for api in bosApis:
             print("inthread:", k)
-            api = bosApis[k]
+            api = list(bosApis[k].keys())[0]
+            acceptedProviderNames = list(bosApis[k].values())[0]
             # print(api)
             try:
-                requests.post(url=api, json=incident)
+                if providerName in acceptedProviderNames:
+                    print("providername in acepted list:", providerName)
+                    requests.post(url=api, json=incident)
+                else:
+                    print("providername NOT in acepted list:", providerName)
             except Exception as e:
                 print(e)
                 logger.warning(api + ": failed")
