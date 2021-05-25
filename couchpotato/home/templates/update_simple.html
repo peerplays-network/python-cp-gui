@@ -142,6 +142,13 @@
                      Home Score : <input type=text class=home value="{{b.eventFromFeed.arguments.home_score}}" /> 
                      <br><br>
                      Away Score  : <input type="text" class=away value="{{b.eventFromFeed.arguments.away_score}}" />
+                     <br><br>
+                     <div >
+                         <h5 style="color:red" class=error_msg>
+                            
+                         </h5>
+                     </div>
+                     
                 </td>
                 
                 <td>
@@ -278,6 +285,12 @@
                      });
 
         }
+
+        function isNumeric(str) {
+            if (typeof str != "string") return false // we only process strings!  
+            return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+                    !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+            }
         function result(e){
           
            
@@ -285,8 +298,7 @@
             var call = 'result'
             if($(".modal").css('display') == undefined ||  $(".modal").css('display') == 'none'){
 
-                // .append('<div id=score><table  ><tr  ><td>Home Score </td><td style="padding-left:10px"><input type="text" id=home></td><tr><td>Away Score </td><td style="padding-left:10px"><input type="text" id=away></td><tr></table>')
-                   
+                    
                 var row = $(e).closest('tr');
                 var data = $('#example').dataTable().fnGetData(row);
                 var event = data[0] 
@@ -307,14 +319,27 @@
             }
            
                 
-            console.log("event ", event)
-            console.log("home score ", homeScore)
-            console.log("away score " ,  awayScore)
+            // console.log("event ", event)
+            // console.log("home score ", homeScore)
+            // console.log("away score " ,  awayScore)
+            // console.log("Away " ,isNumeric(awayScore))
+            // console.log("Home " , isNumeric(homeScore))
 
-            // $( "#submit_result" ).bind( "click", function() {
-
+            var error_obj = $(e).closest('tr').find("h5.error_msg")
+            if (!isNumeric(homeScore)){
                
-                
+                error_obj.html("Home score cannot be empty")
+                // return false
+            }
+            else if(!isNumeric(awayScore)){
+                 error_obj.html("Away score cannot be empty")
+                // return false
+            }
+            else{
+                error_obj.html('')
+                // console.log("post")
+
+
                 $.post("/post_update",
                     {
                     event : event,
@@ -326,6 +351,12 @@
                     function(data, status){
                     alert(data.success)
                     });
+            }
+
+             
+
+               
+                
                 
              
                  

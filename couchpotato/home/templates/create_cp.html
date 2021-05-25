@@ -17,11 +17,14 @@
     <title>Couch Potato</title>
 
     <style>
-      /* body {
-        font-size: 17px;
-      } */
+       
       select{
           width: 30%;
+          font-size: 16px;
+          background: darkorange;
+          padding: 10px;
+          border-radius: 5px;
+
       }
     </style>
    </head>
@@ -46,7 +49,7 @@
             <div>
             <h3> Select Sport</h3>
             <select  class=games  id=1>
-              <option > Select One </option>
+              <option value=999> Select One </option>
                 {% for  key, value  in list.items %}
                  <option value={{key}}> {{value}} </option>
                 {% endfor %}
@@ -59,23 +62,23 @@
              <div>
             <h3> Select League</h3>
             <select  class=groups  id=2>
-              <option > Select One </option>
+              <option value=999> Select One </option>
                 </select>
             <br>
             </div>
             
             <div>
-            <h3> Home </h3>
+            <h3> Home Team</h3>
             <select  class=home  id=3>
-              <option > Select One </option>
+              <option value=999> Select One </option>
                 </select>
             <br>
             </div>
 
             <div>
-            <h3> Away </h3>
+            <h3> Away Team</h3>
             <select  class=away  id=4>
-              <option > Select One </option>
+              <option value=999> Select One </option>
                 </select>
             <br>
             </div>
@@ -96,6 +99,12 @@
                    </span>
                 </div>
              </div> </div>
+
+             <div>
+               <h5 id=error_msg style="color:red;padding-top: 20px;" >
+                  
+               </h5>
+             </div>
             
             <br>
             
@@ -173,17 +182,14 @@
         new_next_select_id = id + 1
         
         if (id == 1 || id == 2){
-          $('#3').html('<option>Select One</option>')
-          $('#4').html('<option>Select One</option>')
+          $('#3').html('<option value=999>Select One</option>')
+          $('#4').html('<option  value=999>Select One</option>')
         }
         sport = $('.games').find("option:selected").text()
         groups = $('.groups').find("option:selected").text()
         home =  $('.home').find("option:selected").text()
         away =  $('.away').find("option:selected").text()
-        // console.log(sport)
-        // console.log(groups)
-        // console.log(home)
-        // console.log(away)
+        
          
 
         
@@ -198,13 +204,11 @@
         },
         function(data, status){
 
-            // console.log(data)
-            var obj = data.list
-            $('#'+new_next_select_id).html('<option>Select One</option>')
+             var obj = data.list
+            $('#'+new_next_select_id).html('<option value=999>Select One</option>')
             if (data.list[1] != 'status'){
               Object.keys(obj).forEach(function(key) {
-                  // console.log(key, obj[key]);
-                  
+                   
                   $('#'+new_next_select_id).append("<option value="+ key +">"+obj[key] + "</option>")
               });
             }
@@ -214,7 +218,44 @@
  
         });
 
-     
+     function validate(){
+
+        var sport = $('.games').find("option:selected").val()
+        var groups = $('.groups').find("option:selected").val()
+        var home =  $('.home').find("option:selected").val()
+        var away =  $('.away').find("option:selected").val()
+        var date_val = $('#datetimepicker1 input').val()
+
+         
+        if(parseInt(sport) === 999){
+          $('#error_msg').html('Please select a sport')
+          return false
+        }
+        else if(parseInt(groups) === 999){
+          $('#error_msg').html('Please select a league')
+          return false
+        }
+        else if(parseInt(home) === 999){
+          $('#error_msg').html('Please select a home team')
+          return false
+        }
+        else if(parseInt(away) === 999){
+          $('#error_msg').html('Please select a away team')
+          return false
+        }
+        else if(typeof date_val === 'undefined' || date_val === ""){
+          $('#error_msg').html('Please select a date time')
+          return false
+        }
+        else{
+          $('#error_msg').html('')
+          return true
+        }
+
+        
+      
+
+     }
    
       $("#create_submit").click(function(){
 
@@ -222,11 +263,13 @@
         var selectedtext = $("form input[type='radio']:checked").next('label:first').html()
       
         var next_num = parseInt($("form").attr("id")) + 1
+
         var date_val = $('#datetimepicker1 input').val()
         var d = new Date(date_val) 
         question_id = 5
-
-        if (typeof date_val !== 'undefined' & date_val !== ""){
+        
+        if (validate()){
+              
             $.post("/post_create",
             {
               id: question_id,
@@ -240,46 +283,14 @@
                 window.location.href =  '/'
               }
               
-              // console.log(data.message)
-              // console.log(data.message.id)
+              
               
             });
         }
 
       })
     
-      // $("#next").click(function(){
-        
-        
-      //   var selected = $("form input[type='radio']:checked");
-      //   var selectedtext = $("form input[type='radio']:checked").next('label:first').html()
-      
-      //   var next_num = parseInt($("form").attr("id")) + 1
-      //   // console.log(selectedtext)
-
-      //   if (typeof selectedtext !== 'undefined'){
-      //      $.post("/post_create",
-      //       {
-      //         id: $("form").attr("id"),
-      //         optionvalue: selected.val(),
-      //         optiontext : selectedtext,
-      //         csrfmiddlewaretoken: '{{ csrf_token }}' ,
-      //       },
-      //       function(data, status){
-      //         window.location.href =  '/create/'+next_num
-      //       });
-      //   }
-        
-
-      // }); 
-
-      // $("#back").click(function(){
-        
-      
-      //   var next_num = parseInt($("form").attr("id")) - 1
-      //   window.location.href =  '/create/'+next_num
-      
-      // });
+     
 
      </script>
   </body>
