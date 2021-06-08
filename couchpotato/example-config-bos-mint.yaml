@@ -27,6 +27,8 @@ potatoNames:
 
 bosApis:
   - http://hercules.peerplays.download:8010/trigger
+    - cpi
+    - cp2
 
 token:
   - 1111111
