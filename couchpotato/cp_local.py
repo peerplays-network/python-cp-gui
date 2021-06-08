@@ -689,10 +689,16 @@ class Cp():
         for k in ks:
             # for api in bosApis:
             print("inthread:", k)
-            api = bosApis[k]
+            api = list(bosApis[k].keys())[0]
+            acceptedProviderNames = list(bosApis[k].values())[0]
             # print(api)
             try:
-                requests.post(url=api, json=incident)
+                if providerName in acceptedProviderNames:
+                    print("providername in acepted list:", providerName)
+                    requests.post(url=api, json=incident)
+                else:
+                    print("providername NOT in acepted list:", providerName)
+                 
             except Exception as e:
                 print(e)
                 logger.warning(api + ": failed")
