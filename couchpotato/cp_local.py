@@ -695,6 +695,7 @@ class Cp():
                     requests.post(url=api, json=incident)
                 else:
                     print("providername NOT in acepted list:", providerName)
+                 
             except Exception as e:
                 print(e)
                 logger.warning(api + ": failed")
