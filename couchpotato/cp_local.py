@@ -724,6 +724,7 @@ class Cp():
         history = []
         for doc in historyGen:
             history.append(doc)
+        history = history[::-1]
         return history
 
     def Push2bosBetter(self, incident, providerNames):
