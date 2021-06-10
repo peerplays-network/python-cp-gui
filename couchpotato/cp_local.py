@@ -1,5 +1,5 @@
-from bos_incidents import factory, exceptions
 
+from bos_incidents import factory, exceptions
 import _thread
 import time
 import numpy as np
@@ -14,13 +14,11 @@ import requests
 import yaml
 import logging
 
-
 with open("config-bos-mint.yaml", "r") as f:
     config = yaml.safe_load(f)
 chainName = config["connection"]["use"]
 bosApis = config["bosApis"]
 potatoNames = config["potatoNames"]
-
 
 # Create and configure logger
 # logging.basicConfig(filename="za.log",
@@ -37,7 +35,6 @@ node = Node()
 # node.unlock(config["password"])
 ppy = node.get_node()
 rpc = ppy.rpc
-
 
 INCIDENT_CALLS = [
     "create",
@@ -728,6 +725,7 @@ class Cp():
         history = []
         for doc in historyGen:
             history.append(doc)
+        history = history[::-1]
         return history
 
     def Push2bosBetter(self, incident, providerNames):

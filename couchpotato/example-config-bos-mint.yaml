@@ -3,12 +3,12 @@ project_name: PYTHON COUCH POTATO
 project_sub_name: The Python Couch Potato project
 secret_key: THINK CLOCK SMOG FLAG SMACK TINKER FLUNK # enter any random string
 advanced_features: True
-
+          
 sql_database: "sqlite:///{cwd}/bookied-local.db"
 
 connection:
     use: hercules # enter your desired chain
-
+          
     hercules:
         node:
           - wss://hercules.peerplays.download/api
@@ -20,20 +20,20 @@ allowed_assets:
     - PPY
     - TEST
     - BTF
-
 potatoNames:
   - cpx
   - cpy
 
 bosApis:
-  - http://hercules.peerplays.download:8010/trigger
+  - http://hercules.peerplays.download:8010/trigger:
     - cpi
     - cp2
 
 token:
-  - 1111111
+  - 
 
 token_telegram: ''
 
 telegram_chat_ids:
-  - ''
+  - ""
+ 
