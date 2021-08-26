@@ -383,6 +383,7 @@
                 var event =$('.modal table').find('tr:eq(0) td:eq(1)').text();
             }
             
+            //console.log("event ", event)
             
             $.post("/post_update",
                 {
@@ -392,9 +393,9 @@
                 awayScore : awayScore,
                 csrfmiddlewaretoken: '{{ csrf_token }}' ,
                 },
-                function(data, status){
-                    alert(data.success)
-                 });
+                //function(data, status){
+                //    alert(data.success)
+                // });
 
  
         }
