@@ -231,7 +231,7 @@
                     
             }
 
-            console.log(event)
+            //console.log(event)
 
 
             $.post("/post_update",
@@ -270,7 +270,7 @@
                 var event =$('.modal table').find('tr:eq(0) td:eq(1)').text();
             }
 
-            console.log(event)
+            //console.log(event)
                 
                 $.post("/post_update",
                     {
@@ -305,9 +305,9 @@
                 var homeScore =  $(e).closest('tr').find("input.home").val()
                 var awayScore =  $(e).closest('tr').find("input.away").val()
                 
-                console.log("event ", event)
-                console.log("home score ", homeScore)
-                console.log("away score " ,  awayScore)
+                //console.log("event ", event)
+                //console.log("home score ", homeScore)
+                //console.log("away score " ,  awayScore)
   
             }
             else{
@@ -383,7 +383,7 @@
                 var event =$('.modal table').find('tr:eq(0) td:eq(1)').text();
             }
             
-            console.log("event ", event)
+            //console.log("event ", event)
             
             $.post("/post_update",
                 {
