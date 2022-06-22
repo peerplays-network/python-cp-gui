@@ -8,7 +8,7 @@ Django==3.2.4
 djangorestframework==3.12.4
 drf_yasg==1.20.0
 jsonschema==3.2.0
-numpy==1.20.3
+numpy==1.22.0
 pandas==1.2.4
 peerplays==0.3.0
 python_dateutil==2.8.1
